@@ -1,0 +1,58 @@
+# comment token, should not tokenize this line i.e should drop it
+1     # ... should drop this too
+2
+3
+4
+5
+6
+7
+8~
+9
+0
+10
+
+# identifier token
+myVar
+
+# string tokens
+"myString with double quotes"
+"myString with double quotes and a ${placer_holder}"
+"myString with double quotes and a \n backslash n"
+"myString with double quotes with a
+line span"
+
+# math tokens
++
+-
+*
+/
+
+# logical tokens
+True
+False
+==
+>
+<
+<=
+>=
+
+# misc tokens
+=
+(
+)
+[
+]
+,
+:
+.
+
+# keywords
+PRINT
+BEGIN
+END
+
+# end file
+
+
+
+
