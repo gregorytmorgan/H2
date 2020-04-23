@@ -1,72 +1,47 @@
-Expression Grammar:
-	
-    functions : functions function
-              | function
-
-    function : NAME ( parms ) = expr ;
-    
-    expr : expr + expr
-         | expr - expr
-         | expr * expr
-         | expr / expr
-         | expr < expr
-         | expr <= expr
-         | expr > expr
-         | expr >= expr
-         | expr == expr
-         | expr != expr
-         | ( expr )
-         | NAME (exprs)
-         | if expr then expr else expr
-         | NUMBER
-
-
-#### Example
-
-statements	: statements statement
-			| statement
-				
-statement	: ID ASS expr
-			| PRINT LPAREN expr RPAREN
-				
-				
-expr		: expr OP expr
-			| LPAREN expr RPAREN
-			| STRING			
-         	| BOOL			
-			| NUM
-			| ID
-
-OP			: ADD
-			| SUB
-			| MUL
-			| DIV
-			| EQ
-			| GT
-			| LT									
-			| GE
-			| LE		
-
-
-#### 
+#
+# h2_grammer.txt
+#
 
 statements	: statements statement
 			| statement
 	        | comment
-			| error			
+			| error
 
 statement	: ID ASS expr
 			| PRINT LPAREN expr RPAREN
 			| ID ( parms ) COLON block
-			
-			
+
+statement	: ID ASS expr
+			| PRINT LPAREN expr RPAREN
+
+expr		: LPAREN expr RPAREN
+            | expr ADD expr
+			| expr SUB expr
+			| expr MUL expr
+			| expr DIV expr
+			| expr EQ expr
+			| expr GT expr
+			| expr LT expr
+			| expr GE expr
+			| expr GE expr
+			| STRING
+         	| BOOL
+			| NUM
+			| ID
+
+
+
+#### scratch
+
+mission     : MISSION LPAREN STRING RPAREN COLON block
+
 block		: BLOCK_START statements BLOCK_END
 
 comment		| singleLineComment
 
-			
-			
-			
-			
 
-				
+
+
+
+
+
