@@ -8,6 +8,9 @@ import ast
 
 from sly import Lexer
 
+Show_endlines = False
+Show_comments = False
+
 class TestLexer(Lexer):
 
     def __init__(self):
@@ -99,7 +102,7 @@ class TestLexer(Lexer):
         if token.value in self.reserved_words:
             if token.value == 'True' or token.value == 'False':
                 token.type = 'BOOL'
-                token.value =  bool(token.value)
+                token.value = ast.literal_eval(token.value)
             elif token.value == 'Do':
                 token.type = 'BLOCK_BEGIN'
             elif token.value == 'Done':
@@ -142,6 +145,12 @@ def main():
                 lines.append(line)
 
             for tok in lexer.tokenize(''.join(lines)):
+                if not Show_endlines and tok.type == 'ENDLINE':
+                    continue
+
+                if not Show_comments and tok.type == 'COMMENT':
+                    continue
+
                 print('type=%r, value=%r' % (tok.type, tok.value))
     else:
         while True:
