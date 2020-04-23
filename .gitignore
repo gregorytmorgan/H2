@@ -1,2 +1,4 @@
 nb-configuration.xml
 __pycache__
+tmp.data
+parser.out
