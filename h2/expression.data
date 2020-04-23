@@ -1,53 +1,54 @@
 # comment test, should not tokenize this line i.e should drop it
-1     # ... should drop this too
 
-# identifier expr  
-myVar
+# identifier expr
+myVar = 1               # ... should drop this too
 
 # strings expr
-"myString with double quotes"
-"myString with double quotes and a ${placer_holder}"
-"myString with double quotes and a \n backslash n"
-"myString with double quotes with a 
+a = "myString with double quotes"
+b = "myString with double quotes and a ${placer_holder}"
+c = "myString with double quotes and a \n backslash n"
+d = "myString with double quotes with a
 line span"
 
 # math expr
-1 + 2
-3 - 4
-5 * 6
-7 / 8
+e = 1 + 2
+f = 3 - 4
+g = 5 * 6
+h = 7 / 8
 
-# math grouping  
-1 * (2 + 3)
-(2 + 3) * 1
+# math grouping
+i = 1 * (2 + 3)
+j = (2 + 3) * 1
 
 # math uminus
--1
+k = -1
 
 # logical expr
-True
-False
+l = True
+m = False
 
-1 == 1
-2 > 3
-4 < 5
-6 <= 7
-8 >= 9
+n = 1 == 1
+o = 2 > 3
+p = 4 < 5
+q = 6 <= 7
+r = 8 >= 9
 
-# assignment expr
-a = True  
-b = 1
-c = 2 + 3
-d = a
-e = []
-f = [1]
-g = [1,2]
-h = [1,2,3]            
-i = "hello"
-    
 # end file
-    
 
 
+s = 1 + 2
+t = (3 + 4) * 5
+u = 6 * (7 + 8)
+v = "hello" + 4
+w = -3
 
-  
+Mission("hello") Do
+    x = 1
+    Print("world")
+    Print(3 + 4)
+Done
+
+Print(3)
+Print (5 + 1)
+
+# end file
