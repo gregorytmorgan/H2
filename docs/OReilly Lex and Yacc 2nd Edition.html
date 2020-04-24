@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>1. Lex and Yacc - lex &amp; yacc, 2nd Edition [Book]</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <link rel="stylesheet" href="/library/view/static/CACHE/css/ea2b863fd710.css" type="text/css" />
+    <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css' />
+    <link rel="stylesheet" type="text/css" href="https://cdn.oreillystatic.com/assets/css/2018_font_face.css" />
+   
+    <link rel="shortcut icon" href="//www.oreilly.com/favicon.ico" type="image/vnd.microsoft.icon" />
+
+    <style type="text/css" title="ibis-book">
+    @charset "utf-8";#sbo-rt-content html,#sbo-rt-content div,#sbo-rt-content div,#sbo-rt-content span,#sbo-rt-content applet,#sbo-rt-content object,#sbo-rt-content iframe,#sbo-rt-content h1,#sbo-rt-content h2,#sbo-rt-content h3,#sbo-rt-content h4,#sbo-rt-content h5,#sbo-rt-content h6,#sbo-rt-content p,#sbo-rt-content blockquote,#sbo-rt-content pre,#sbo-rt-content a,#sbo-rt-content abbr,#sbo-rt-content acronym,#sbo-rt-content address,#sbo-rt-content big,#sbo-rt-content cite,#sbo-rt-content code,#sbo-rt-content del,#sbo-rt-content dfn,#sbo-rt-content em,#sbo-rt-content font,#sbo-rt-content img,#sbo-rt-content ins,#sbo-rt-content kbd,#sbo-rt-content q,#sbo-rt-content s,#sbo-rt-content samp,#sbo-rt-content small,#sbo-rt-content strike,#sbo-rt-content strong,#sbo-rt-content sub,#sbo-rt-content sup,#sbo-rt-content tt,#sbo-rt-content var,#sbo-rt-content b,#sbo-rt-content u,#sbo-rt-content i,#sbo-rt-content center,#sbo-rt-content dl,#sbo-rt-content dt,#sbo-rt-content dd,#sbo-rt-content ol,#sbo-rt-content ul,#sbo-rt-content li,#sbo-rt-content fieldset,#sbo-rt-content form,#sbo-rt-content label,#sbo-rt-content legend,#sbo-rt-content table,#sbo-rt-content caption,#sbo-rt-content tdiv,#sbo-rt-content tfoot,#sbo-rt-content thead,#sbo-rt-content tr,#sbo-rt-content th,#sbo-rt-content td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}@page{margin:5px !important}#sbo-rt-content p{margin:8px 0 0}#sbo-rt-content span.bolditalic{font-weight:bold;font-style:italic}#sbo-rt-content strong,#sbo-rt-content span.bold{font-weight:bold}#sbo-rt-content a.ulink,#sbo-rt-content a.xref,#sbo-rt-content a.email,#sbo-rt-content a.link{text-decoration:none;color:#8e0012}#sbo-rt-content sup{font-size:x-small;vertical-align:super}#sbo-rt-content sub{font-size:smaller;vertical-align:sub}#sbo-rt-content span.lineannotation{font-style:italic;color:red;font-family:serif}#sbo-rt-content span.underline{text-decoration:underline}#sbo-rt-content span.strikethrough{text-decoration:line-through}#sbo-rt-content span.smallcaps{font-variant:small-caps}#sbo-rt-content span.cursor{background:#000;color:#FFF}#sbo-rt-content span.smaller{font-size:75%}#sbo-rt-content .boxedtext,#sbo-rt-content .keycap{border-style:solid;border-width:1px;border-color:#000;padding:1px}#sbo-rt-content span.gray50{color:#7F7F7F;}#sbo-rt-content .gray-background,#sbo-rt-content .reverse-video{background:#2E2E2E;color:#FFF}#sbo-rt-content .light-gray-background{background:#A0A0A0}#sbo-rt-content .preserve-whitespace{white-space:pre-wrap}#sbo-rt-content h1{font-size:1.5em;font-weight:bold;font-family:sans-serif,"DejaVuSans";margin-top:20px !important}#sbo-rt-content h2{font-size:1.3em;font-weight:bold;font-family:sans-serif,"DejaVuSans";color:#8e0012;margin:15px 0 8px 0 !important}#sbo-rt-content h3{font-size:1.1em;font-weight:bold;font-family:sans-serif,"DejaVuSans";margin:10px 0 8px 0 !important}#sbo-rt-content h4{font-size:bold;font-weight:1em;font-family:sans-serif,"DejaVuSans";color:#555;margin:9px 0 !important}#sbo-rt-content h1,#sbo-rt-content h2,#sbo-rt-content h3,#sbo-rt-content h4{-webkit-hyphens:none;hyphens:none;adobe-hyphenate:none;page-break-after:avoid}#sbo-rt-content div.titlepage{page-break-inside:avoid}#sbo-rt-content div.chapter>div.titlepage:first-child h1.title,#sbo-rt-content div.preface>div.titlepage:first-child h1.title,#sbo-rt-content div.appendix>div.titlepage:first-child h1.title{font-size:2em;line-height:1;margin-bottom:15px}#sbo-rt-content img{max-width:95%;margin:0 auto;padding:0}#sbo-rt-content div.figure{margin:10px 0 !important;text-align:center;-webkit-border-radius:5px;border-radius:5px;border:1px solid #000;background-color:transparent;padding:5px !important;page-break-inside:avoid}#sbo-rt-content div.figure p.title,#sbo-rt-content div.informalfigure div.caption{font-size:90%;text-align:center;font-weight:normal;font-style:italic;font-family:serif,"DejaVuSerif";color:#000;padding:5px !important;page-break-before:avoid;page-break-after:avoid}#sbo-rt-content div.informalfigure{text-align:center;padding:5px 0 !important}#sbo-rt-content div.sidebar{margin:10px 0 !important;-webkit-border-radius:5px;border-radius:5px;border:1px solid #000;background-color:transparent;font-size:90%;padding:10px 8px !important;page-break-inside:avoid}#sbo-rt-content div.sidebar p.title{font-weight:bold;font-size:1em;font-family:sans-serif,"DejaVuSans";text-transform:uppercase;letter-spacing:1px;text-align:center;margin:4px 0 6px 0 !important;page-break-inside:avoid}#sbo-rt-content div.sidebar div.figure p.title,#sbo-rt-content div.sidebar div.informalfigure div.caption{font-size:90%;text-align:center;font-weight:normal;font-style:italic;font-family:serif,"DejaVuSerif";color:#000;padding:5px !important;page-break-before:avoid;page-break-after:avoid}#sbo-rt-content div.sidebar ol{margin-left:15px}#sbo-rt-content div.sidebar div.tip,#sbo-rt-content div.sidebar div.note,#sbo-rt-content div.sidebar div.warning,#sbo-rt-content div.sidebar div.caution,#sbo-rt-content div.sidebar div.important{margin:10px 12.5% !important;font-size:90%;padding:10px 5px !important;width:75%}#sbo-rt-content div.sidebar div.tip,#sbo-rt-content div.sidebar div.note{background-color:#f1f6fc;border:none}#sbo-rt-content div.sidebar div.warning,#sbo-rt-content div.sidebar div.caution{background-color:#fce5e8}#sbo-rt-content div.sidebar div.important{background-color:#FBEC5D}#sbo-rt-content div.sidebar div.figure{border:none}#sbo-rt-content pre{white-space:pre-wrap;font-family:"Ubuntu Mono",monospace;margin:10px 0 10px 20px;font-size:85%;display:block;-webkit-hyphens:none;hyphens:none;adobe-hyphenate:none}#sbo-rt-content code{font-family:"Ubuntu Mono",monospace}#sbo-rt-content code strong em,#sbo-rt-content code em strong,#sbo-rt-content pre em strong,#sbo-rt-content pre strong em,#sbo-rt-content strong code em code,#sbo-rt-content em code strong code,#sbo-rt-content span.bolditalic code{font-weight:bold;font-style:italic;font-family:"Ubuntu Mono BoldItal",monospace}#sbo-rt-content code em,#sbo-rt-content em code,#sbo-rt-content pre em,#sbo-rt-content em.replaceable{font-family:"Ubuntu Mono Ital",monospace;font-style:italic}#sbo-rt-content code strong,#sbo-rt-content strong code,#sbo-rt-content pre strong,#sbo-rt-content strong.userinput{font-family:"Ubuntu Mono Bold",monospace;font-weight:bold}#sbo-rt-content div.example{margin:10px 0 15px 0 !important}#sbo-rt-content div.example p.title{font-style:italic;font-weight:normal;font-family:serif,"DejaVuSerif";margin:10px 0 5px 0 !important}#sbo-rt-content li pre.example{padding:10px 0 !important}#sbo-rt-content div.example-contents pre.programlisting,#sbo-rt-content div.example-contents pre.screen{margin:0}#sbo-rt-content span.gray{color:#4C4C4C}#sbo-rt-content div.book div.titlepage h1.title{font-size:3em;font-family:sans-serif,"DejaVuSans";font-weight:bold;margin:50px 0 10px 0 !important;line-height:1;text-align:center}#sbo-rt-content div.book div.titlepage h2.subtitle{text-align:center;color:#000;margin:0 !important;font-style:italic;font-family:serif;font-size:1.5em}#sbo-rt-content div.book div.titlepage div.author h3{font-size:2em;font-family:sans-serif,"DejaVuSans";font-weight:bold;color:#8e0012;margin:50px 0 !important;text-align:center}#sbo-rt-content div.book div.titlepage div.publishername{margin-top:60%;margin-bottom:20px;text-align:center;font-size:1.25em}#sbo-rt-content div.book div.titlepage div.locations p{margin:0;text-align:center}#sbo-rt-content div.book div.titlepage div.locations p.cities{font-size:80%;text-align:center;margin-top:5px}#sbo-rt-content div.preface[title="Dedication"]>div.titlepage h1.title{text-align:center;text-transform:uppercase;font-size:1.5em;margin-top:50px;margin-bottom:50px}#sbo-rt-content div.preface[title="Dedication"] p{font-style:italic;text-align:center}#sbo-rt-content div.colophon h1.title{font-size:1.3em;margin:0 !important;font-family:serif,"DejaVuSerif";font-weight:normal}#sbo-rt-content div.colophon h2.subtitle{margin:0 !important;color:#000;font-family:serif,"DejaVuSerif";font-size:1em;font-weight:normal}#sbo-rt-content div.colophon div.author h3.author{font-size:1.1em;font-family:serif,"DejaVuSerif";margin:10px 0 0 !important;font-weight:normal}#sbo-rt-content div.colophon div.editor h4,#sbo-rt-content div.colophon div.editor h3.editor{color:#000;font-size:.8em;margin:15px 0 0 !important;font-family:serif,"DejaVuSerif";font-weight:normal}#sbo-rt-content div.colophon div.editor h3.editor{font-size:.8em;margin:0 !important;font-family:serif,"DejaVuSerif";font-weight:normal}#sbo-rt-content div.colophon div.publisher{margin-top:10px}#sbo-rt-content div.colophon div.publisher p,#sbo-rt-content div.colophon div.publisher span.publishername{margin:0;font-size:.8em}#sbo-rt-content div.legalnotice p,#sbo-rt-content div.timestamp p{font-size:.8em}#sbo-rt-content div.timestamp p{margin-top:10pt}#sbo-rt-content div.colophon[title="About the Author"] h1.title,#sbo-rt-content div.colophon[title="Colophon"] h1.title{font-size:1.5em;margin:0 !important;font-family:sans-serif,"DejaVuSans";font-weight:bold}#sbo-rt-content section.chapter div.titlepage div.author{margin-bottom:40px}#sbo-rt-content section.chapter div.titlepage div.author div.affiliation{font-style:italic}#sbo-rt-content div.attribution{margin:5px 0 0 50px !important}#sbo-rt-content h3.author span.orgname{display:none}#sbo-rt-content div.epigraph{margin:10px 0 10px 20px !important;page-break-inside:avoid;font-size:90%}#sbo-rt-content blockquote,#sbo-rt-content div.blockquote{margin:10px !important;page-break-inside:avoid;font-size:95%}#sbo-rt-content blockquote p,#sbo-rt-content div.blockquote p{font-style:italic;font-family:serif,"DejaVuSerif"}#sbo-rt-content blockquote div.attribution{margin:5px 0 0 30px !important;text-align:right;width:80%}#sbo-rt-content blockquote div.attribution p{font-style:normal}#sbo-rt-content p.right{text-align:right;margin:0}#sbo-rt-content div.footnote{font-size:90%}#sbo-rt-content div.refnamediv h2,#sbo-rt-content div.refnamediv h3,#sbo-rt-content div.refsynopsisdiv h2{font-size:1.1em;color:#000;margin-top:15px !important;margin-bottom:0 !important}#sbo-rt-content div.refentry div.refsect1 h2{font-size:1.1em;color:#000;margin-top:15px !important;margin-bottom:0 !important}#sbo-rt-content div.refsect2 h3{font-size:1em;color:#000;margin-top:10px !important;margin-bottom:0 !important}#sbo-rt-content div.refnamediv p{margin-left:15px !important}#sbo-rt-content dt{padding-top:10px !important;padding-bottom:0 !important}#sbo-rt-content dd{margin-left:1.5em !important}#sbo-rt-content ol{list-style-type:decimal;margin-top:8px !important;margin-bottom:8px !important;margin-left:20px !important;padding-left:25px !important}#sbo-rt-content ol ol{list-style-type:lower-alpha}#sbo-rt-content ol ol ol{list-style-type:lower-roman}#sbo-rt-content ul{list-style-type:square;margin-top:8px !important;margin-bottom:8px !important;margin-left:5px !important;padding-left:20px !important}#sbo-rt-content ul ul{list-style-type:none;padding-left:0 !important;margin-left:0 !important}#sbo-rt-content ul ul li p:before{content:"— "}#sbo-rt-content ul ul ul li p:before{content:""}#sbo-rt-content ul ul ul{list-style-type:square;margin-left:20px !important;padding-left:30px !important}#sbo-rt-content div.orderedlistalpha{list-style-type:upper-alpha}#sbo-rt-content table.simplelist{margin-left:20px !important;margin-bottom:10px}#sbo-rt-content table.simplelist td{border:none;font-size:90%}#sbo-rt-content table.simplelist tr{border-bottom:none}#sbo-rt-content table.simplelist tr:nth-of-type(even){background-color:transparent}#sbo-rt-content div.calloutlist p:first-child{margin-top:-25px !important}#sbo-rt-content div.calloutlist dd{padding-left:40px !important}#sbo-rt-content div.calloutlist img{padding:0}#sbo-rt-content a.co img{padding:0}#sbo-rt-content div.tip,#sbo-rt-content div.note,#sbo-rt-content div.warning,#sbo-rt-content div.caution,#sbo-rt-content div.important{margin:10px 0 !important;-webkit-border-radius:5px;border-radius:5px;font-size:90%;padding:10px 8px 20px 8px !important;page-break-inside:avoid}#sbo-rt-content div.tip,#sbo-rt-content div.note{border:1px solid #6cafd0;background-color:transparent}#sbo-rt-content div.warning,#sbo-rt-content div.caution{border:1px solid #8e0012;background-color:#fce5e8}#sbo-rt-content div.important{background-color:#FFF68F;border:1px solid #615E3F}#sbo-rt-content div.tip h3,#sbo-rt-content div.note h3,#sbo-rt-content div.warning h3,#sbo-rt-content div.caution h3,#sbo-rt-content div.important h3{font:bold 90%;font-family:sans-serif,"DejaVuSans";text-transform:uppercase;letter-spacing:1px;text-align:center;margin:4px 0 6px !important;color:#000}#sbo-rt-content div.table,#sbo-rt-content table{margin:10px auto !important;max-width:95%;border-collapse:collapse;border-spacing:0}#sbo-rt-content div.table,#sbo-rt-content div.informaltable{page-break-inside:avoid}#sbo-rt-content tr{border-bottom:1px solid #c3c3c3}#sbo-rt-content tr th{border-bottom:#9d9d9d 2px solid !important;border-top:#9d9d9d 2px solid !important}#sbo-rt-content tr:nth-of-type(even){background-color:#f1f6fc}#sbo-rt-content th{font-family:sans-serif,"DejaVuSans";color:#000;font-weight:bold}#sbo-rt-content td,#sbo-rt-content th{padding:.3em;text-align:left;vertical-align:baseline;font-size:80%}#sbo-rt-content div.informaltable table{margin:10px auto !important}#sbo-rt-content div.informaltable table tr{border-bottom:none}#sbo-rt-content div.informaltable table tr:nth-of-type(even){background-color:transparent}#sbo-rt-content div.informaltable td,#sbo-rt-content div.informaltable th{border:#9d9d9d 1px solid}#sbo-rt-content div.table p.title{font-weight:normal;font-style:italic;font-family:serif,"DejaVuSerif";margin:20px 0 0 0 !important;text-align:center;padding:0}#sbo-rt-content table code{font-size:smaller}#sbo-rt-content div.equation p.title{font-weight:normal;font-style:italic;font-family:serif,"DejaVuSerif";margin:20px 0 10px 0 !important;page-break-after:avoid}#sbo-rt-content div.equation-contents{margin-left:20px}#sbo-rt-content span.inlinemediaobject{height:.85em;display:inline-block;margin-bottom:.2em}#sbo-rt-content span.inlinemediaobject img{margin:0;height:.85em}#sbo-rt-content div.informalequation{margin:20px 0 20px 20px;width:75%}#sbo-rt-content div.informalequation img{width:75%}#sbo-rt-content div.index{font-weight:bold}#sbo-rt-content div.index dt{line-height:140%}#sbo-rt-content div.index a.indexterm{color:#8e0012}#sbo-rt-content code.boolean,#sbo-rt-content .navy{color:rgb(0,0,128);}#sbo-rt-content code.character,#sbo-rt-content .olive{color:rgb(128,128,0);}#sbo-rt-content code.comment,#sbo-rt-content .blue{color:rgb(0,0,255);}#sbo-rt-content code.conditional,#sbo-rt-content .limegreen{color:rgb(50,205,50);}#sbo-rt-content code.constant,#sbo-rt-content .darkorange{color:rgb(255,140,0);}#sbo-rt-content code.debug,#sbo-rt-content .darkred{color:rgb(139,0,0);}#sbo-rt-content code.define,#sbo-rt-content .darkgoldenrod,#sbo-rt-content .gold{color:rgb(184,134,11);}#sbo-rt-content code.delimiter,#sbo-rt-content .dimgray{color:rgb(105,105,105);}#sbo-rt-content code.error,#sbo-rt-content .red{color:rgb(255,0,0);}#sbo-rt-content code.exception,#sbo-rt-content .salmon{color:rgb(250,128,11);}#sbo-rt-content code.float,#sbo-rt-content .steelblue{color:rgb(70,130,180);}#sbo-rt-content pre code.function,#sbo-rt-content .green{color:rgb(0,128,0);}#sbo-rt-content code.identifier,#sbo-rt-content .royalblue{color:rgb(65,105,225);}#sbo-rt-content code.ignore,#sbo-rt-content .gray{color:rgb(128,128,128);}#sbo-rt-content code.include,#sbo-rt-content .purple{color:rgb(128,0,128);}#sbo-rt-content code.keyword,#sbo-rt-content .sienna{color:rgb(160,82,45);}#sbo-rt-content code.label,#sbo-rt-content .deeppink{color:rgb(255,20,147);}#sbo-rt-content code.macro,#sbo-rt-content .orangered{color:rgb(255,69,0);}#sbo-rt-content code.number,#sbo-rt-content .brown{color:rgb(165,42,42);}#sbo-rt-content code.operator,#sbo-rt-content .black{color:#000;}#sbo-rt-content code.preCondit,#sbo-rt-content .teal{color:rgb(0,128,128);}#sbo-rt-content code.preProc,#sbo-rt-content .fuschia{color:rgb(255,0,255);}#sbo-rt-content code.repeat,#sbo-rt-content .indigo{color:rgb(75,0,130);}#sbo-rt-content code.special,#sbo-rt-content .saddlebrown{color:rgb(139,69,19);}#sbo-rt-content code.specialchar,#sbo-rt-content .magenta{color:rgb(255,0,255);}#sbo-rt-content code.specialcomment,#sbo-rt-content .seagreen{color:rgb(46,139,87);}#sbo-rt-content code.statement,#sbo-rt-content .forestgreen{color:rgb(34,139,34);}#sbo-rt-content code.storageclass,#sbo-rt-content .plum{color:rgb(221,160,221);}#sbo-rt-content code.string,#sbo-rt-content .darkred{color:rgb(139,0,0);}#sbo-rt-content code.structure,#sbo-rt-content .chocolate{color:rgb(210,106,30);}#sbo-rt-content code.tag,#sbo-rt-content .darkcyan{color:rgb(0,139,139);}#sbo-rt-content code.todo,#sbo-rt-content .black{color:#000;}#sbo-rt-content code.type,#sbo-rt-content .mediumslateblue{color:rgb(123,104,238);}#sbo-rt-content code.typedef,#sbo-rt-content .darkgreen{color:rgb(0,100,0);}#sbo-rt-content code.underlined{text-decoration:underline;}#sbo-rt-content pre code.hll{background-color:#ffc}#sbo-rt-content pre code.c{color:#09F;font-style:italic}#sbo-rt-content pre code.err{color:#A00}#sbo-rt-content pre code.k{color:#069;font-weight:bold}#sbo-rt-content pre code.o{color:#555}#sbo-rt-content pre code.cm{color:#35586C;font-style:italic}#sbo-rt-content pre code.cp{color:#099}#sbo-rt-content pre code.c1{color:#35586C;font-style:italic}#sbo-rt-content pre code.cs{color:#35586C;font-weight:bold;font-style:italic}#sbo-rt-content pre code.gd{background-color:#FCC}#sbo-rt-content pre code.ge{font-style:italic}#sbo-rt-content pre code.gr{color:#F00}#sbo-rt-content pre code.gh{color:#030;font-weight:bold}#sbo-rt-content pre code.gi{background-color:#CFC}#sbo-rt-content pre code.go{color:#000}#sbo-rt-content pre code.gp{color:#009;font-weight:bold}#sbo-rt-content pre code.gs{font-weight:bold}#sbo-rt-content pre code.gu{color:#030;font-weight:bold}#sbo-rt-content pre code.gt{color:#9C6}#sbo-rt-content pre code.kc{color:#069;font-weight:bold}#sbo-rt-content pre code.kd{color:#069;font-weight:bold}#sbo-rt-content pre code.kn{color:#069;font-weight:bold}#sbo-rt-content pre code.kp{color:#069}#sbo-rt-content pre code.kr{color:#069;font-weight:bold}#sbo-rt-content pre code.kt{color:#078;font-weight:bold}#sbo-rt-content pre code.m{color:#F60}#sbo-rt-content pre code.s{color:#C30}#sbo-rt-content pre code.na{color:#309}#sbo-rt-content pre code.nb{color:#366}#sbo-rt-content pre code.nc{color:#0A8;font-weight:bold}#sbo-rt-content pre code.no{color:#360}#sbo-rt-content pre code.nd{color:#99F}#sbo-rt-content pre code.ni{color:#999;font-weight:bold}#sbo-rt-content pre code.ne{color:#C00;font-weight:bold}#sbo-rt-content pre code.nf{color:#C0F}#sbo-rt-content pre code.nl{color:#99F}#sbo-rt-content pre code.nn{color:#0CF;font-weight:bold}#sbo-rt-content pre code.nt{color:#309;font-weight:bold}#sbo-rt-content pre code.nv{color:#033}#sbo-rt-content pre code.ow{color:#000;font-weight:bold}#sbo-rt-content pre code.w{color:#bbb}#sbo-rt-content pre code.mf{color:#F60}#sbo-rt-content pre code.mh{color:#F60}#sbo-rt-content pre code.mi{color:#F60}#sbo-rt-content pre code.mo{color:#F60}#sbo-rt-content pre code.sb{color:#C30}#sbo-rt-content pre code.sc{color:#C30}#sbo-rt-content pre code.sd{color:#C30;font-style:italic}#sbo-rt-content pre code.s2{color:#C30}#sbo-rt-content pre code.se{color:#C30;font-weight:bold}#sbo-rt-content pre code.sh{color:#C30}#sbo-rt-content pre code.si{color:#A00}#sbo-rt-content pre code.sx{color:#C30}#sbo-rt-content pre code.sr{color:#3AA}#sbo-rt-content pre code.s1{color:#C30}#sbo-rt-content pre code.ss{color:#A60}#sbo-rt-content pre code.bp{color:#366}#sbo-rt-content pre code.vc{color:#033}#sbo-rt-content pre code.vg{color:#033}#sbo-rt-content pre code.vi{color:#033}#sbo-rt-content pre code.il{color:#F60}#sbo-rt-content pre code.g{color:#050}#sbo-rt-content pre code.l{color:#C60}#sbo-rt-content pre code.l{color:#F90}#sbo-rt-content pre code.n{color:#008}#sbo-rt-content pre code.nx{color:#008}#sbo-rt-content pre code.py{color:#96F}#sbo-rt-content pre code.p{color:#000}#sbo-rt-content pre code.x{color:#F06}#sbo-rt-content div.blockquote_sampler_toc{width:95%;margin:5px 5px 5px 10px !important}#sbo-rt-content div{font-family:serif,"DejaVuSerif"}
+</style>
+  
+</head>
+<body class="js-preview-content  ">
+
+<div class="skipToMain" id="skipToMain"><a href="#maincontent"><span class="skipToMain-text">Skip to main content</span></a></div>
+<header role="banner" class="global">
+  <div class="global-nav">
+    <div class="content">
+      <nav role="navigation" aria-label="site sections">
+        <a href="https://www.oreilly.com" class="logo" title="home page" aria-current="page"><img src="https://cdn.oreillystatic.com/images/sitewide-headers/oreilly_logo_mark_red.svg" onerror="this.src='https://cdn.oreillystatic.com/images/sitewide-headers/oreilly_logo_mark_red_@2x.png'; this.onerror=null;" alt="O'Reilly home"></a>
+
+        <button id="mobileNavButton" class="mobileNavButton mobileNavButton--collapse mobileNavButton--3dx" type="button" aria-expanded="false" aria-controls="menuList">
+          <span class="mobileNavButton-box">
+            <span class="mobileNavButton-inner"></span>
+          </span>
+        </button>
+
+
+        <ul id="menuList" class="menuList mobileHidden ">
+          <li class="menuList-itemsP1">
+            <ul>
+              
+  <li class="menuList-item menuList-signIn"><a class="t-sign-in" href="https://learning.oreilly.com/accounts/login/?next=/library/view/lex-yacc/9781565920002/ch01.html">Sign In</a></li>
+
+
+              <li class="menuList-item menuList-tryNow"><a class="menuList-cta" href="https://learning.oreilly.com/register/">Try Now</a></li>
+            </ul>
+          </li>
+          <li class="menuList-itemsP2">
+            <ul>
+              <li class="menuList-item menuList-itemWithSub"><a href="https://www.oreilly.com/online-learning/index.html">Online Learning</a>
+                <ul class="menuList-subList">
+                  <li class="menuList-subItem"><a href="https://www.oreilly.com/online-learning/individuals.html">Individuals</a></li>
+                  <li class="menuList-subItem"><a href="https://www.oreilly.com/online-learning/teams.html">Teams</a></li>
+                  <li class="menuList-subItem"><a href="https://www.oreilly.com/online-learning/enterprise.html">Enterprise</a></li>
+                  <li class="menuList-subItem"><a href="https://www.oreilly.com/online-learning/government.html">Government</a></li>
+                  <li class="menuList-subItem"><a href="https://www.oreilly.com/online-learning/academic.html">Academic</a></li>
+                  <li class="menuList-subItem"><a href="https://www.oreilly.com/online-learning/features.html">Features</a></li>
+                  <li class="menuList-subItem"><a href="https://www.oreilly.com/online-learning/custom-services.html">Custom Services</a></li>
+                  <li class="menuList-subItem"><a href="https://www.oreilly.com/online-learning/pricing.html">Pricing</a></li>
+                </ul>
+              </li>
+              <li class="menuList-item menuList-itemWithSub"><a href="https://www.oreilly.com/conferences/">Conferences</a>
+                <ul class="menuList-subList menuList-subList-conferences">
+                  <li class="menuList-subItem"><a href="https://conferences.oreilly.com/infrastructure-ops" onmousedown="dataLayer.push({'event': 'eventTracker', 'eventCat': 'Outbound Links', 'eventAct':'Oreilly', 'eventLbl': 'conferences.oreilly.com/infrastructure-ops', 'eventVal': 0, 'nonInteraction': 0});">Infrastructure &amp; Ops Conference</a></li>
+                  <li class="menuList-subItem"><a href="https://conferences.oreilly.com/oscon" onmousedown="dataLayer.push({'event': 'eventTracker', 'eventCat': 'Outbound Links', 'eventAct':'Oreilly', 'eventLbl': 'conferences.oreilly.com/oscon', 'eventVal': 0, 'nonInteraction': 0});">Open Source Software Conference</a></li>
+                  <li class="menuList-subItem"><a href="https://conferences.oreilly.com/software-architecture" onmousedown="dataLayer.push({'event': 'eventTracker', 'eventCat': 'Outbound Links', 'eventAct':'Oreilly', 'eventLbl': 'conferences.oreilly.com/software-architecture', 'eventVal': 0, 'nonInteraction': 0});">Software Architecture Conference</a></li>
+                  <li class="menuList-subItem"><a href="https://conferences.oreilly.com/strata-data-ai" onmousedown="dataLayer.push({'event': 'eventTracker', 'eventCat': 'Outbound Links', 'eventAct':'Oreilly', 'eventLbl': 'conferences.oreilly.com/strata-data-ai', 'eventVal': 0, 'nonInteraction': 0});">Strata Data &amp; AI Conference</a></li>
+                  <li class="menuList-subItem"><a href="https://conferences.oreilly.com/tensorflow" onmousedown="dataLayer.push({'event': 'eventTracker', 'eventCat': 'Outbound Links', 'eventAct':'Oreilly', 'eventLbl': 'conferences.oreilly.com/tensorflow', 'eventVal': 0, 'nonInteraction': 0});">TensorFlow World</a></li>
+                </ul></li>
+              
+              <li class="menuList-item menuList-itemWithSub"><a href="https://www.oreilly.com/radar/">Radar</a>
+                <ul class="menuList-subList">
+                  <li class="menuList-subItem"><a href="https://www.oreilly.com/radar/topics/ai-ml/">AI/ML</a></li>
+                  <li class="menuList-subItem"><a href="https://www.oreilly.com/radar/topics/future-of-the-firm/">Future of the Firm</a></li>
+                  <li class="menuList-subItem"><a href="https://www.oreilly.com/radar/topics/innovation-and-disruption/" class="nowrap">Innovation &amp; Disruption</a></li>
+                  <li class="menuList-subItem"><a href="https://www.oreilly.com/radar/topics/next-architecture/">Next Architecture</a></li>
+                  <li class="menuList-subItem"><a href="https://www.oreilly.com/radar/topics/next-economy/">Next Economy</a></li>
+                  <li class="menuList-subItem"><a href="https://www.oreilly.com/radar/posts/">All Articles</a></li>
+                </ul>
+              </li>
+
+              <li class="menuList-item"><a href="https://www.oreilly.com/about/approach.html">Our Approach</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+
+  <div class="global-search">
+    <div class="content">
+      <form id="js-search-form" class="t-navigation-form" action="https://learning.oreilly.com/search/">
+        
+        <script type="application/ld+json">
+        {
+          "@context": "http://schema.org",
+          "@type": "WebSite",
+          "url": "https://learning.oreilly.com",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://learning.oreilly.com/search/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }
+        </script>
+        <input data-search-text-focus= "See everything available through O’Reilly online learning and start a free trial. Explore now." data-search-text-idle = "See everything available through O’Reilly online learning and start a free trial. Explore now." id="search" type="search" name="query" placeholder="See everything available through O’Reilly online learning and start a free trial. Explore now." autocomplete="off" required />
+        <input type="submit" value="Search" class="search-submit" />
+      </form>
+    </div>
+  </div>
+</header>
+
+    
+    
+        <div class="sbo-menu-top">
+           
+            <section class="sbo-toc-container">
+                <a href="https://learning.oreilly.com/library/view/lex-yacc/9781565920002/" class="sbo-toc-thumb">
+                    <span class="sbo-title ss-list">
+                        
+                            <h1 class="t-title">lex &amp; yacc, 2nd Edition by John Levine, Doug Brown, Tony Mason</h1>
+                        
+                    </span>
+                </a>
+            </section>
+             
+        </div>
+    
+
+
+</header>
+
+
+<section id="trial-overlay">
+  <div class="trial-overlay-content">
+    <p>Get <em>lex &amp; yacc, 2nd Edition</em> now with O’Reilly <span class="nowrap">online learning.</span></p>
+
+    <p>O’Reilly members experience live online training, plus books, videos, and digital content from <span class="nowrap">200+ publishers.</span></p>
+
+    <div class="controls">
+      <a href="https://learning.oreilly.com/register/" class="button-primary" data-ga-label="Bottom CTA">Start your free trial</a>
+    </div>
+    <a class="modal-dismiss" aria-label="modal dismiss"></a>
+  </div>
+</section>
+
+<main role="main" id="maincontent">
+  <div role="document" class="document">
+  	
+<section id="sbo-reader">
+    
+    
+
+<div class="sbo-reader-content sbo-sample-reader ">
+    
+    <div id="sbo-rt-content" class="sbo-rt-content">
+    <div id="test-content-id"><div class="chapter" title="Chapter 1. Lex and Yacc"><div class="titlepage"><div><div><h1 class="title"><a id="lex_and_yacc"></a>Chapter 1. Lex and Yacc</h1></div></div></div><p>Lex and yacc help you write programs that transform structured input. This includes an enormous range of applications—anything from a simple text search program that looks for patterns in its input file to a C compiler that transforms a source program into optimized object code.</p><p>In programs with structured input, two tasks that occur over and over are dividing the input into meaningful units, and then discovering the relationship among the units. For a text search program, the units would probably be lines of text, with a distinction between lines that contain a match of the target string and lines that don’t. For a C program, the units are variable names, constants, strings, operators, punctuation, and so forth. This division into units (which are usually called <span class="emphasis"><em>tokens)</em></span> is known as <span class="emphasis"><em>lexical analysis</em></span>, or <span class="emphasis"><em>lexing</em></span> for short. Lex helps you by taking a set of descriptions of possible tokens and producing a C routine, which we call a <span class="emphasis"><em>lexical analyzer</em></span>, or a <span class="emphasis"><em>lexer</em></span>, or a <span class="emphasis"><em>scanner</em></span> for short, that can identify those tokens. The set of descriptions you give to lex is called a <span class="emphasis"><em>lex specification</em></span>.</p><p>The token descriptions that lex uses are known as <span class="emphasis"><em>regular expressions</em></span>, extended versions of the familiar patterns used by the <span class="emphasis"><em>grep</em></span> and <span class="emphasis"><em>egrep</em></span> commands. Lex turns these regular expressions into a form that the lexer can use to scan the input text extremely fast, independent of the number of expressions that it is trying to match. A lex lexer is almost always faster than a lexer that you might write in C by hand.</p><p>As the input is divided into tokens, a program often needs to establish the relationship among the tokens. A C compiler needs to find the expressions, statements, declarations, blocks, and procedures in the program. This task is known as <span class="emphasis"><em>parsing</em></span> and the list of rules that define the relationships that the program understands is a <span class="emphasis"><em>grammar</em></span>. Yacc takes a concise description of a grammar and produces a C routine that can parse that grammar, a <span class="emphasis"><em>parser</em></span>. The yacc parser automatically detects whenever a sequence of input tokens matches one of the rules in the grammar and also detects a syntax error whenever its input doesn’t match any of the rules. A yacc parser is generally not as fast as a parser you could write by hand, but the ease in writing and modifying the parser is invariably worth any speed loss. The amount of time a program spends in a parser is rarely enough to be an issue anyway.</p><p>When a task involves dividing the input into units and establishing some relationship among those units, you should think of lex and yacc. (A search program is so simple that it doesn’t need to do any parsing so it uses lex but doesn’t need yacc. We’ll see this again in <a class="link" href="ch02.html" title="Chapter 2. Using Lex">Chapter 2</a>, where we build several applications using lex but not yacc.)</p><p>By now, we hope we’ve whetted your appetite for more details. We do not intend for this chapter to be a complete tutorial on lex and yacc, but rather a gentle introduction to their use.</p><div class="sect1" title="The Simplest Lex Program"><div class="titlepage"><div><div><h1 class="title"><a id="the_simplest_lex_program"></a>The Simplest Lex Program</h1></div></div></div><p>This lex program copies its standard input to its standard output:</p><a id="I_programlisting1_tt7"></a><pre class="programlisting">    %%
+    .|\n     ECHO;
+    %%</pre><p>It acts very much like the UNIX <span class="emphasis"><em>cat</em></span> command run with no arguments.</p><p>Lex automatically generates the actual C program code needed to handle reading the input file and sometimes, as in this case, writing the output as well.</p><p>Whether you use lex and yacc to build parts of your program or to build tools to aid you in programming, once you master them they will prove their worth many times over by simplifying difficult input handling problems, providing more easily maintainable code base, and allowing for easier “tinkering” to get the right semantics for your program.</p></div><div class="sect1" title="Recognizing Words with Lex"><div class="titlepage"><div><div><h1 class="title"><a id="recognizing_words_with_lex"></a>Recognizing Words with Lex</h1></div></div></div><p>Let’s build a simple program that recognizes different types of English words. We start by identifying parts of speech (noun, verb, etc.) and will later extend it to handle multiword sentences that conform to a simple English grammar.</p><p>We start by listing a set of verbs to recognize:</p><table border="0" summary="Simple list" class="simplelist"><tr><td>is</td><td>am</td><td>are</td><td>were</td></tr><tr><td>was</td><td>be</td><td>being</td><td>been</td></tr><tr><td>do</td><td>does</td><td>did</td><td>will</td></tr><tr><td>would</td><td>should</td><td>can</td><td>could</td></tr><tr><td>has</td><td>have</td><td>had</td><td>go</td></tr></table><p>
+            <a class="link" href="ch01.html#word_recognizer_ch102l" title="Example 1-1. Word recognizer ch1-02.l">Example 1-1</a> shows a simple lex specification to recognize these verbs.</p><div class="example"><a id="word_recognizer_ch102l"></a><p class="title">Example 1-1. Word recognizer ch1-02.l</p><div class="example-contents"><pre class="programlisting">%{
+/*
+ * this sample demonstrates (very) simple recognition:
+ * a verb/not a verb.
+ */
+
+%}
+%%
+
+[\t ]+                   /* ignore whitespace */ ;
+
+is |
+am |
+are |
+were |
+was |
+be |
+being |
+been |
+do |
+does |
+did  |
+will |
+would |
+should |
+can  |
+could |
+has  |
+have |
+had |
+go        { printf("%s: is a verb\n", yytext); }
+[a-zA-Z]+ { printf("%s: is not a verb\n", yytext); }
+
+.|\n      { ECHO; /* normal default anyway */ }
+%%
+
+main()
+{
+      yylex() ;
+}</pre></div></div><p>Here’s what happens when we compile and run this program. What we type is in <strong class="userinput"><code>bold</code></strong>.</p><a id="I_programlisting1_tt8"></a><pre class="programlisting">    % <span class="bold"><strong>example1</strong></span>
+    <span class="bold"><strong>did I have fun?</strong></span>
+    did: is a verb
+    I: is not a verb
+    have: is a verb
+    fun: is not a verb
+    ?
+    ^D
+    %</pre><p>To explain what’s going on, let’s start with the first section:</p><a id="I_programlisting1_tt9"></a><pre class="programlisting">    %{
+    /*
+     * This sample demonstrates very simple recognition:
+     * a verb/not a verb.
+     */
+
+    %}</pre><p>This first section, the <span class="emphasis"><em>definition section</em></span>,<a id="IDX-lex_and_yacc-0001" class="indexterm"></a> introduces any initial<a id="IDX-lex_and_yacc-0002" class="indexterm"></a> C<a id="IDX-lex_and_yacc-0003" class="indexterm"></a> program code we want copied into the final program. This is especially important if, for example, we have header files that must be included for code later in the file to work. We surround the C code with the special delimiters “%{” and “%}.” Lex copies the material between “%{” and “%}” directly to the generated C file, so you may write any valid C code here.</p><p>In this example, the only thing in the definition section is some C comments. You might wonder whether we could have included the comments without the delimiters. Outside of “%{” and “%}”, comments must be indented with whitespace for lex<a id="IDX-lex_and_yacc-0004" class="indexterm"></a> to recognize them correctly. We’ve seen some amazing bugs when people forgot to indent their comments and lex interpreted them as something else.</p><p>The %%<a id="IDX-lex_and_yacc-0005" class="indexterm"></a> marks the end of this section.</p><p>The next section is the <span class="emphasis"><em>rules</em></span>
+            <a id="IDX-lex_and_yacc-0006" class="indexterm"></a> 
+            <span class="emphasis"><em>section</em></span>. Each rule is made up of two parts: a <span class="emphasis"><em>pattern</em></span> and an <span class="emphasis"><em>action</em></span>, separated by whitespace. The lexer that lex<a id="IDX-lex_and_yacc-0007" class="indexterm"></a>
+            <a id="IDX-lex_and_yacc-0008" class="indexterm"></a>
+            <a id="IDX-lex_and_yacc-0009" class="indexterm"></a>
+            <a id="IDX-lex_and_yacc-0010" class="indexterm"></a> generates will execute the action when it recognizes the pattern. These patterns are UNIX-style regular expressions, a slightly extended version of the same expressions used by tools such as <span class="emphasis"><em>grep, sed</em></span>, and <span class="emphasis"><em>ed</em></span>. <a class="link" href="ch06.html" title="Chapter 6. A Reference for Lex Specifications">Chapter 6</a> describes all the rules for regular expressions. The first rule in our example is the following:</p><a id="I_programlisting1_tt10"></a><pre class="programlisting">    [\t ]+                  /* ignore whitespace */ ;</pre><p>The square brackets, “[]”, indicate that any one of the characters within the brackets matches the pattern. For our example, we accept either “\t” (a tab character) or " " (a space). The “+” means that the pattern matches one or more consecutive copies of the subpattern that precedes the plus. Thus, this pattern describes whitespace (any combination of tabs and spaces.) The second part of the rule, the <span class="emphasis"><em>action</em></span>, is simply a semicolon, a do-nothing C statement. Its effect is to ignore the input.</p><p>The next set of rules uses the “|” (vertical bar) action. This is a special action that means to use the same action as the next pattern, so all of the verbs use the action specified for the last one.<sup>[<a id="CHP-1-FN-1" href="#ftn.CHP-1-FN-1" class="footnote">1</a>]</sup>
+         </p><p>Our first set of patterns is:</p><a id="I_programlisting1_tt11"></a><pre class="programlisting">    is |
+    am |
+    are |
+    were |
+    was |
+    be |
+    being |
+    been |
+    do |
+    does |
+    did |
+    should |
+    can |
+    could |
+    has |
+    have |
+    had |
+    go         { printf("%s: is a verb\n", yytext); }</pre><p>Our patterns match any of the verbs in the list. Once we recognize a verb, we execute the action, a C <span class="bold"><strong>printf</strong></span> statement. The array <span class="bold"><strong>yytext</strong></span>
+            <a id="IDX-lex_and_yacc-0011" class="indexterm"></a> contains the text that matched the pattern. This action will print the recognized verb followed by the string “: is a verb\n”.</p><p>The last two rules are:</p><a id="I_programlisting1_tt12"></a><pre class="programlisting">    [a-zA-Z]+  { printf("%s:  is not a verb\n", yytext);   }
+
+    .|\n       { ECHO;<a id="IDX-lex_and_yacc-0012" class="indexterm"></a>  /* normal default anyway */ }</pre><p>The pattern “[a-zA-Z]+” is a common one: it indicates any alphabetic string<a id="IDX-lex_and_yacc-0013" class="indexterm"></a> with at least one character. The “-” character has a special meaning when used inside square brackets: it denotes a range of characters beginning with the character to the left of the “-” and ending with the character to its right. Our action when we see one of these patterns is to print the matched token and the string “: is not a verb\n”.</p><p>It doesn’t take long to realize that any word that matches any of the verbs listed in the earlier rules will match this rule as well. You might then wonder why it won’t execute both actions when it sees a verb in the list. And would both actions be executed when it sees the word “island,” since “island” starts with “is”? The answer is that lex has a set of simple disambiguating rules.<a id="IDX-lex_and_yacc-0014" class="indexterm"></a> The two that make our lexer work are:</p><div class="orderedlist"><ol class="orderedlist"><li class="listitem"><p>Lex patterns only match a given input character or string once.</p></li><li class="listitem"><p>Lex executes the action for the longest possible match for the current input. Thus, lex would see “island” as matching<a id="IDX-lex_and_yacc-0015" class="indexterm"></a> our all-inclusive rule because that was a longer match than “is.”</p></li></ol></div><p>If you think about how a lex lexer matches patterns, you should be able to see how our example matches only the verbs listed.</p><p>The last line is the default case. The special character “.” (period) matches any single character other than a newline, and “\n” matches a newline character. The special action ECHO prints the matched pattern on the output, copying any punctuation or other characters. We explicitly list this case although it is the default behavior. We have seen some complex lexers that worked incorrectly because of this very feature, producing occasional strange output when the default pattern matched unanticipated input characters. (Even though there is a default action<a id="IDX-lex_and_yacc-0016" class="indexterm"></a> for unmatched input characters, well-written lexers invariably have explicit rules to match all possible input.)</p><p>The end of the rules section is delimited by another %%.</p><p>The final section is the <span class="emphasis"><em>user subroutines section</em></span>,<a id="IDX-lex_and_yacc-0017" class="indexterm"></a> which can consist of any legal C code. Lex copies it to the C file after the end of the lex<a id="IDX-lex_and_yacc-0018" class="indexterm"></a> generated code. We have included a <span class="bold"><strong>main()</strong></span>
+            <a id="IDX-lex_and_yacc-0019" class="indexterm"></a> program.</p><a id="I_programlisting1_tt13"></a><pre class="programlisting">    %%
+
+    main()
+    {
+          yylex();
+    }</pre><p>The lexer produced by lex is a C routine called <span class="bold"><strong>yylex()</strong></span>,<a id="IDX-lex_and_yacc-0020" class="indexterm"></a> so we call it.<sup>[<a id="CHP-1-FN-2" href="#ftn.CHP-1-FN-2" class="footnote">2</a>]</sup> Unless the actions contain explicit <span class="bold"><strong>return</strong></span> statements, <span class="bold"><strong>yylex()</strong></span> won’t return until it has processed the entire input.</p><p>We placed our original example in a file called <span class="emphasis"><em>ch1-02.l</em></span> since it is our second example. To create an executable program on our UNIX system we enter these commands:</p><a id="I_programlisting1_tt14"></a><pre class="programlisting">    % <span class="bold"><strong>lex  ch1-02.l</strong></span>
+    % <span class="bold"><strong>cc  lex.yy.c -o first -ll</strong></span></pre><p>Lex translates the lex specification into a C source file called <span class="emphasis"><em>lex.yy.c</em></span> which we compiled and linked with the lex library -<span class="emphasis"><em>ll</em></span>. We then execute the resulting program to check that it works as we expect, as we saw earlier in this section. Try it to convince yourself that this simple description really does recognize exactly the verbs we decided to recognize.</p><p>Now that we’ve tackled our first example, let’s “spruce it up.” Our second example, <a class="link" href="ch01.html#lex_example_with_multiple_parts_of_speech_ch103l" title="Example 1-2. Lex example with multiple parts of speech ch1-03.l">Example 1-2</a>, extends the lexer to recognize different parts of speech.</p><div class="example"><a id="lex_example_with_multiple_parts_of_speech_ch103l"></a><p class="title">Example 1-2. Lex example with multiple parts of speech ch1-03.l</p><div class="example-contents"><pre class="programlisting">%{
+/*
+ * We expand upon the first example by adding recognition of some other
+ * parts of speech.
+ */
+
+%}
+%%
+
+[\t ]+                    /* ignore whitespace */ ;
+is |
+am |
+are |
+were |
+was |
+be |
+being |
+been |
+do |
+does |
+did |
+will |
+would |
+should |
+can |
+could |
+has |
+have |
+had |
+go       { printf("%s: is a verb\n", yytext); }
+
+very |
+simply |
+gently |
+quietly |
+calmly |
+angrily   { printf("%s: is an adverb\n", yytext); }
+
+to |
+from |
+behind |
+above |
+below |
+between
+below     { printf("%s: is a preposition\n", yytext); }
+
+if |
+then |
+and |
+but |
+or       { printf("%s: is a conjunction\n", yytext); }
+
+their |
+my |
+your |
+his |
+her |
+its      { printf("%s: is a adjective\n", yytext); }
+
+I |
+you |
+he |
+she  |
+we  |
+they       { printf("%s: is a pronoun\n", yytext); }
+
+
+[a-zA-Z]+ {
+       printf("%s:  don't recognize, might be a noun\n", yytext);
+      }
+.|\n        { ECHO;/* normal default anyway */ }
+
+%%
+
+main()
+{
+     yylex();
+}</pre></div></div><div class="sect2" title="Symbol Tables"><div class="titlepage"><div><div><h2 class="title"><a id="symbol_tables"></a>Symbol Tables</h2></div></div></div><p>Our second example isn’t really very different. We list more words than we did before, and in principle we could extend this example to as many words as we want. It would be more convenient, though, if we could build a table of words as the lexer is running, so we can add new words without modifying and recompiling the lex program. In our next example, we do just that—allow for the dynamic declaration of parts of speech as the lexer is running, reading the words to declare from the input file. Declaration lines start with the name of a part of speech followed by the words to declare. These lines, for example, declare four nouns and three verbs:</p><a id="I_programlisting1_tt15"></a><pre class="programlisting">    noun dog cat horse cow
+    verb chew eat lick</pre><p>The table of words is a simple <span class="emphasis"><em>symbol table</em></span>, a common structure in lex and yacc applications. A C compiler, for example, stores the variable and structure names, labels, enumeration tags, and all other names used in the program in its symbol table. Each name is stored along with information describing the name. In a C compiler the information is the type of symbol, declaration scope, variable type, etc. In our current example, the information is the part of speech.</p><p>Adding a symbol table changes the lexer quite substantially. Rather than putting separate patterns in the lexer for each word to match, we have a single pattern that matches any word and we consult the symbol table to decide which part of speech we’ve found. The names of parts of speech (noun, verb, etc.) are now “reserved words” since they introduce a declaration line. We still have a separate lex pattern for each reserved word. We also have to add symbol table maintenance routines,<a id="IDX-lex_and_yacc-0021" class="indexterm"></a> in this case <span class="bold"><strong>add_word()</strong></span>, which puts a new word into the symbol table, and <span class="bold"><strong>lookup_word( )</strong></span>, which looks up a word which should already be entered.</p><p>In the program’s code, we declare a variable <span class="bold"><strong>state</strong></span> that keeps track of whether we’re looking up words, state LOOKUP, or declaring them, in which case <span class="bold"><strong>state</strong></span> remembers what kind of words we’re declaring. Whenever we see a line starting with the name of a part of speech, we set the state to declare that kind of word; each time we see a \n we switch back to the normal lookup state.</p><p>
+               <a class="link" href="ch01.html#lexer_with_symbol_table_part_1_of_3_ch104l" title="Example 1-3. Lexer with symbol table (part 1 of 3) ch1-04.l">Example 1-3</a> shows the definition section.</p><div class="example"><a id="lexer_with_symbol_table_part_1_of_3_ch104l"></a><p class="title">Example 1-3. Lexer with symbol table (part 1 of 3) ch1-04.l</p><div class="example-contents"><pre class="programlisting">%{
+/*
+ * Word recognizer with a symbol table.
+ */
+
+enum {
+      LOOKUP =0, /* default - looking rather than defining. */
+      VERB,
+      ADJ,
+      ADV,
+      NOUN,
+      REP,
+      PRON,
+      CONJ
+};
+
+int state;
+
+int add_word(int type, char *word);
+int lookup_word(char *word);
+%}</pre></div></div><p>We define an <span class="emphasis"><em>enum</em></span> in order to use in our table to record the types of individual words, and to declare a variable <span class="bold"><strong>state</strong></span>. We use this enumerated type both in the state variable to track what we’re defining and in the symbol table to record what type each defined word is. We also declare our symbol table routines.</p><p>
+               <a class="link" href="ch01.html#lexer_with_symbol_table_part_2_of_3_ch104l" title="Example 1-4. Lexer with symbol table (part 2 of 3) ch1-04.l">Example 1-4</a> shows the rules section.</p><div class="example"><a id="lexer_with_symbol_table_part_2_of_3_ch104l"></a><p class="title">Example 1-4. Lexer with symbol table (part 2 of 3) ch1-04.l</p><div class="example-contents"><pre class="programlisting">%%
+\n    { state = LOOKUP; }   /* end of line, return to default state */
+
+      /* whenever a line starts with a reserved part of speech name */
+      /* start defining words of that type */
+^verb { state = VERB; }
+^adj  { state = ADJ; }
+^adv  { state = ADV; }
+^noun { state = NOUN; }
+^prep { state = PREP; }
+^pron { state = PRON; }
+^conj { state = CONJ; }
+
+
+[a-zA-Z]+ {
+                /* a normal word, define it or look it up */
+           if(state != LOOKUP) {
+                /* define the current word */
+                add_word(state, yytext);
+              } else {
+                 switch(lookup_word(yytext)) {
+                 case VERB: printf("%s: verb\n", yytext); break;
+                 case ADJ: printf("%s: adjective\n", yytext); break;
+                 case ADV: printf("%s: adverb\n", yytext); break;
+                 case NOUN: printf("%s: noun\n", yytext); break;
+                 case PREP: printf("%s: preposition\n", yytext); break;
+                 case PRON: printf("%s: pronoun\n", yytext); break;
+                 case CONJ: printf("%s: conjunction\n", yytext); break;
+                 default:
+                         printf("%s: don't recognize\n", yytext);
+                         break;
+                 }
+          }
+         }
+
+.    /* ignore anything else */ ;
+
+%%</pre></div></div><p>For declaring words, the first group of rules sets the state to the type corresponding to the part of speech being declared. (The caret, “^”, at the beginning of the pattern makes the pattern match only at the beginning of an input line.) We reset the state to <span class="bold"><strong>LOOKUP</strong></span> at the beginning of each line so that after we add new words interactively we can test our table of words to determine if it is working correctly. If the state is <span class="bold"><strong>LOOKUP</strong></span> when the pattern “[a-zA-Z]+” matches, we look up the word, using <span class="bold"><strong>lookup_word()</strong></span>, and if found print out its type. If we’re in any other state, we define the word with <span class="bold"><strong>add_word()</strong></span>.</p><p>The user subroutines section in <a class="link" href="ch01.html#lexer_with_symbol_table_part_3_of_3_ch104l" title="Example 1-5. Lexer with symbol table (part 3 of 3) ch1-04.l">Example 1-5</a> contains the same skeletal <span class="bold"><strong>main()</strong></span> routine and our two supporting functions.</p><div class="example"><a id="lexer_with_symbol_table_part_3_of_3_ch104l"></a><p class="title">Example 1-5. Lexer with symbol table (part 3 of 3) ch1-04.l</p><div class="example-contents"><pre class="programlisting">main()
+{
+      yylex();
+}
+
+/* define a linked list of words and types */
+struct word {
+      char *word_name;
+      int word_type;
+      struct word *next;
+};
+
+struct word *word_list; /* first element in word list */
+
+extern void *malloc() ;
+
+int
+add_word(int type, char *word)
+{
+      struct word *wp;
+
+      if(lookup_word(word) != LOOKUP) {
+            printf("!!! warning: word %s already defined \n", word);
+            return 0;
+      }
+
+      /* word not there, allocate a new entry and link it on the list */
+
+      wp = (struct word *) malloc(sizeof(struct word));
+
+      wp-&gt;next = word_list;
+
+      /* have to copy the word itself as well */
+
+      wp-&gt;word_name = (char *) malloc(strlen(word)+1);
+      strcpy(wp-&gt;word_name, word);
+      wp-&gt;word_type = type;
+      word_list = wp;
+      return 1;  /* it worked */
+}
+
+int
+lookup_word(char *word)
+{
+      struct word *wp = word_list;
+
+      /* search down the list looking for the word */
+      for(; wp; wp = wp-&gt;next) {
+      if(strcmp(wp-&gt;word_name, word) == 0)
+            return wp-&gt;word_type;
+      }
+
+      return LOOKUP;       /* not found */
+}</pre></div></div><p>These last two functions create and search a linked list of words. If there are a lot of words, the functions will be slow since, for each word, they might have to search through the entire list. In a production environment we would use a faster but more complex scheme, probably using a hash table. Our simple example does the job, albeit slowly.</p><p>Here is an example of a session we had with our last example:</p><a id="I_programlisting1_tt16"></a><pre class="programlisting">               <strong class="userinput"><code>verb is am are was were be being been do</code></strong>
+    <strong class="userinput"><code>is</code></strong>
+    is: verb
+    <strong class="userinput"><code>noun dog cat horse cow</code></strong>
+    <strong class="userinput"><code>verb chew eat lick</code></strong>
+    <strong class="userinput"><code>verb run stand sleep</code></strong>
+    <strong class="userinput"><code>dog run</code></strong>
+    dog: noun
+    run: verb
+    <strong class="userinput"><code>chew eat sleep cow horse</code></strong>
+    chew: verb
+    eat: verb
+    sleep: verb
+    cow: noun
+    horse: noun
+    <strong class="userinput"><code>verb talk</code></strong>
+    <strong class="userinput"><code>talk</code></strong>
+    talk: verb</pre><p>We strongly encourage you to play with this example until you are satisfied you understand it.</p></div></div><div class="sect1" title="Grammars"><div class="titlepage"><div><div><h1 class="title"><a id="grammars"></a>Grammars</h1></div></div></div><p>For some applications, the simple kind of word recognition we’ve already done may be more than adequate; others need to recognize specific sequences of tokens and perform appropriate actions. Traditionally, a description of such a set of actions is known as a <span class="emphasis"><em>grammar</em></span>. It seems especially appropriate for our example. Suppose that we wished to recognize common sentences. Here is a list of simple sentence types:</p><table border="0" summary="Simple list" class="simplelist"><tr><td>
+               <span class="emphasis"><em>noun verb</em></span>.</td></tr><tr><td>
+               <span class="emphasis"><em>noun verb noun</em></span>.</td></tr></table><p>At this point, it seems convenient to introduce some notation for describing grammars. We use the right facing arrow, “→”, to mean that a particular set of tokens can be replaced by a new symbol.<sup>[<a id="CHP-1-FN-3" href="#ftn.CHP-1-FN-3" class="footnote">3</a>]</sup> For instance:</p><table border="0" summary="Simple list" class="simplelist"><tr><td>
+               <span class="emphasis"><em>subject → noun</em></span> | <span class="emphasis"><em>pronoun</em></span>
+            </td></tr></table><p>would indicate that the new symbol <span class="emphasis"><em>subject</em></span> is either a noun or a pronoun. We haven’t changed the meaning of the underlying symbols; rather we have built our new symbol from the more fundamental symbols we’ve already defined. As an added example we could define an object as follows:</p><table border="0" summary="Simple list" class="simplelist"><tr><td>
+               <span class="emphasis"><em>object → noun</em></span>
+            </td></tr></table><p>While not strictly correct as English grammar, we can now define a sentence:</p><table border="0" summary="Simple list" class="simplelist"><tr><td>
+               <span class="emphasis"><em>sentence → subject verb object</em></span>
+            </td></tr></table><p>Indeed, we could expand this definition of sentence to fit a much wider variety of sentences. However, at this stage we would like to build a yacc grammar so we can test our ideas out interactively. Before we introduce our yacc grammar, we must modify our lexical analyzer in order to return values useful to our new parser.</p><div class="sect2" title="Parser-Lexer Communication"><div class="titlepage"><div><div><h2 class="title"><a id="parser_lexer_communication"></a>Parser-Lexer Communication</h2></div></div></div><p>When you use a lex scanner and a yacc parser together, the parser is the higher level routine. It calls the lexer <span class="bold"><strong>yylex()</strong></span>
+               <a id="IDX-lex_and_yacc-0022" class="indexterm"></a> whenever it needs a token from the input. The lexer then scans through the input recognizing tokens. As soon as it finds a token of interest to the parser, it returns to the parser, returning the token’s code as the value of <span class="bold"><strong>yylex()</strong></span>.</p><p>Not all tokens are of interest to the parser—in most programming languages the parser doesn’t want to hear about comments and whitespace, for example. For these ignored tokens, the lexer doesn’t return so that it can continue on to the next token without bothering the parser.</p><p>The lexer and the parser have to agree what the token codes<a id="IDX-lex_and_yacc-0023" class="indexterm"></a> are. We solve this problem by letting yacc define the token codes. The tokens in our grammar are the parts of speech: <span class="bold"><strong>NOUN</strong></span>, <span class="bold"><strong>PRONOUN</strong></span>, <span class="bold"><strong>VERB</strong></span>, <span class="bold"><strong>ADVERB</strong></span>, <span class="bold"><strong>ADJECTIVE</strong></span>, <span class="bold"><strong>PREPOSITION</strong></span>, and <span class="bold"><strong>CONJUNCTION</strong></span>. Yacc defines each of these as a small integer using a preprocessor <span class="emphasis"><em>#define</em></span>. Here are the definitions it used in this example:</p><a id="I_programlisting1_tt17"></a><pre class="programlisting">    # define NOUN 257
+    # define PRONOUN 258
+    # define VERB 259
+    # define ADVERB 260
+    # define ADJECTIVE 261
+    # define PREPOSITION 262
+    # define CONJUNCTION 263</pre><p>Token code zero is always returned for the logical end of the input. Yacc doesn’t define a symbol for it, but you can yourself if you want.</p><p>Yacc can optionally write a C header file containing all of the token definitions. You include this file, called <span class="emphasis"><em>y.tab.h</em></span> on UNIX systems and <span class="emphasis"><em>ytab.h</em></span> or <span class="emphasis"><em>yytab.h</em></span> on MS-DOS, in the lexer and use the preprocessor symbols in your lexer action code.</p></div></div><div class="sect1" title="The Parts of Speech Lexer"><div class="titlepage"><div><div><h1 class="title"><a id="the_parts_of_speech_lexer"></a>The Parts of Speech Lexer</h1></div></div></div><p>
+            <a class="link" href="ch01.html#lexer_to_be_called_from_the_parser_ch105l" title="Example 1-6. Lexer to be called from the parser ch1-05.l">Example 1-6</a> shows the declarations and rules sections of the new lexer.</p><div class="example"><a id="lexer_to_be_called_from_the_parser_ch105l"></a><p class="title">Example 1-6. Lexer to be called from the parser ch1-05.l</p><div class="example-contents"><pre class="programlisting">%{
+/*
+ * We now build a lexical analyzer to be used by a higher-level parser.
+ */
+
+#include "y.tab.h"    /* token codes from the parser */
+
+#define   LOOKUP 0   /* default - not a defined word type. */
+
+int state;
+
+%}
+
+%%
+
+\n    { state = LOOKUP; }
+
+\.\n  {     state = LOOKUP;
+            return 0;  /* end of sentence */
+      }
+
+^verb { state = VERB; }
+^adj  { state = ADJECTIVE; }
+^adv  { state = ADVERB; }
+^noun { state = NOUN; }
+^prep { state = PREPOSITION; }
+^pron { state = PRONOUN; }
+^conj { state = CONJUNCTION; }
+
+[a-zA-Z]+ {
+           if(state != LOOKUP) {
+            add_word(state, yytext);
+           } else {
+            switch(lookup_word(yytext)) {
+            case VERB:
+              return(VERB);
+            case ADJECTIVE:
+              return(ADJECTIVE);
+            case ADVERB:
+              return(ADVERB);
+            case NOUN:
+              return(NOUN);
+            case PREPOSITION:
+              return(PREPOSITION);
+            case PRONOUN:
+              return(PRONOUN);
+            case CONJUNCTION:
+              return(CONJUNCTION);
+            default:
+              printf("%s: don't recognize\n", yytext);
+              /* don't return, just ignore it */
+            }
+            }
+          }
+.    ;
+
+%%</pre></div></div><p>... <span class="emphasis"><em>same add_word() and lookup_word() as before</em></span> ...</p><p>There are several important differences here. We’ve changed the part of speech names used in the lexer to agree with the token names in the parser. We have also added <span class="bold"><strong>return</strong></span> statements to pass to the parser the token codes for the words that it recognizes. There aren’t any <span class="bold"><strong>return</strong></span> statements for the tokens that define new words to the lexer, since the parser doesn’t care about them.</p><p>These return statements show that <span class="bold"><strong>yylex()</strong></span> acts like a coroutine. Each time the parser calls it, it takes up processing at the exact point it left off. This allows us to examine and operate upon the input stream incrementally. Our first programs didn’t need to take advantage of this, but it becomes more useful as we use the lexer as part of a larger program.</p><p>We added a rule to mark the end of a sentence:</p><a id="I_programlisting1_tt18"></a><pre class="programlisting">    \.\n  {      state = LOOKUP;
+                 return 0;  /* end of sentence */
+          }</pre><p>The backslash in front of the period quotes the period, so this rule matches a period followed by a newline. The other change we made to our lexical analyzer was to omit the <span class="bold"><strong>main()</strong></span> routine as it will now be provided within the parser.</p><div class="sect2" title="A Yacc Parser"><div class="titlepage"><div><div><h2 class="title"><a id="a_yacc_parser"></a>A Yacc Parser</h2></div></div></div><p>Finally, <a class="link" href="ch01.html#simple_yacc_sentence_parser_ch105y" title="Example 1-7. Simple yacc sentence parser ch1-05.y">Example 1-7</a> introduces our first cut at the yacc grammar.</p><div class="example"><a id="simple_yacc_sentence_parser_ch105y"></a><p class="title">Example 1-7. Simple yacc sentence parser ch1-05.y</p><div class="example-contents"><pre class="programlisting">%{
+/*
+ * A lexer for the basic grammar to use for recognizing English sentences.
+ */
+#include &lt;stdio.h&gt;
+%}
+
+%token NOUN PRONOUN VERB ADVERB ADJECTIVE PREPOSITION CONJUNCTION
+
+%%
+sentence: subject VERB object{ printf("Sentence is valid.\n"); }
+      ;
+
+subject:    NOUN
+      |     PRONOUN
+      ;
+
+object:          NOUN
+
+      ;
+%%
+
+extern FILE *yyin;
+
+main()
+{
+     do
+       {
+           yyparse();
+     }
+        while (!feof(yyin));
+}
+
+yyerror(s)
+char *s;
+{
+    fprintf(stderr, "%s\n", s);
+}</pre></div></div><p>The structure of a yacc<a id="IDX-lex_and_yacc-0024" class="indexterm"></a>
+               <a id="IDX-lex_and_yacc-0025" class="indexterm"></a>
+               <a id="IDX-lex_and_yacc-0026" class="indexterm"></a> parser is, not by accident, similar to that of a lex lexer. Our first section, the definition section,<a id="IDX-lex_and_yacc-0027" class="indexterm"></a> has a literal code block, enclosed in “%{” and “%}”. We use it here for a C<a id="IDX-lex_and_yacc-0028" class="indexterm"></a> comment (as with lex, C comments belong inside C code blocks, at least within the definition section) and a single include file.</p><p>Then come definitions of all the tokens we expect to receive from the lexical analyzer. In this example, they correspond to the eight parts of speech. The name of a token does not have any intrinsic meaning to yacc, although well-chosen token names tell the reader what they represent. Although yacc lets you use any valid C identifier name for a yacc symbol, universal custom dictates that token names be all uppercase and other names in the parser mostly or entirely lowercase.</p><p>The first %%<a id="IDX-lex_and_yacc-0029" class="indexterm"></a> indicates the beginning of the rules<a id="IDX-lex_and_yacc-0030" class="indexterm"></a> section. The second %% indicates the end of the rules and the beginning of the user subroutines section. The most important subroutine is <span class="bold"><strong>main()</strong></span>
+               <a id="IDX-lex_and_yacc-0031" class="indexterm"></a> which repeatedly calls <span class="bold"><strong>yyparse()</strong></span>
+               <a id="IDX-lex_and_yacc-0032" class="indexterm"></a> until the lexer’s input file runs out. The routine <span class="bold"><strong>yyparse()</strong></span> is the parser generated by yacc, so our main program repeatedly tries to parse sentences until the input runs out. (The lexer returns a zero token whenever it sees a period at the end of a line; that’s the signal to the parser that the input for the current parse is complete.)</p></div><div class="sect2" title="The Rules Section"><div class="titlepage"><div><div><h2 class="title"><a id="the_rules_section"></a>The Rules Section</h2></div></div></div><p>The rules section describes the actual grammar as a set of <span class="emphasis"><em>production rules</em></span> or simply <span class="emphasis"><em>rules</em></span>. (Some people also call them <span class="emphasis"><em>productions</em></span>.) Each rule consists of a single name on the left-hand side of the “:” operator, a list of symbols and action code on the right-hand side, and a semicolon indicating the end of the rule. By default, the first rule is the highest-level rule. That is, the parser attempts to find a list of tokens which match this initial rule, or more commonly, rules found from the initial rule. The expression on the right-hand side of the rule is a list of zero or more names. A typical simple rule has a single symbol on the right-hand side as in the <span class="bold"><strong>object</strong></span> rule which is defined to be a <span class="bold"><strong>NOUN</strong></span>. The symbol on the left-hand side of the rule can then be used like a token in other rules. From this, we build complex grammars.</p><p>In our grammar we use the special character “|”, which introduces a rule with the same left-hand side as the previous one. It is usually read as “or,” e.g., in our grammar a subject can be either a <span class="bold"><strong>NOUN</strong></span> or a <span class="bold"><strong>PRONOUN</strong></span>. The <span class="emphasis"><em>action</em></span> part of a rule consists of a C block, beginning with “{” and ending with “}”. The parser executes an action at the end of a rule as soon as the rule matches. In our <span class="bold"><strong>sentence</strong></span> rule, the action reports that we’ve successfully parsed a sentence. Since <span class="bold"><strong>sentence</strong></span> is the top-level symbol, the entire input must match a <span class="bold"><strong>sentence</strong></span>. The parser returns to its caller, in this case the main program, when the lexer reports the end of the input. Subsequent calls to <span class="bold"><strong>yyparse()</strong></span> reset the state and begin processing again. Our example prints a message if it sees a “subject VERB object” list of input tokens. What happens if it sees “subject subject” or some other invalid list of tokens? The parser calls <span class="bold"><strong>yyerror()</strong></span>,<a id="IDX-lex_and_yacc-0033" class="indexterm"></a> which we provide in the user subroutines section,<a id="IDX-lex_and_yacc-0034" class="indexterm"></a> and then recognizes the special rule <span class="bold"><strong>error</strong></span>. You can provide error recovery code that tries to get the parser back into a state where it can continue parsing. If error recovery fails or, as is the case here, there is no error recovery code, <span class="bold"><strong>yyparse()</strong></span> returns to the caller after it finds an error.</p><p>The third and final section, the user subroutines section, begins after the second %%. This section can contain any C code and is copied, verbatim, into the resulting parser. In our example, we have provided the minimal set of functions necessary for a yacc-generated<a id="IDX-lex_and_yacc-0035" class="indexterm"></a>
+               <a id="IDX-lex_and_yacc-0036" class="indexterm"></a> parser using a lex-generated<a id="IDX-lex_and_yacc-0037" class="indexterm"></a> lexer to compile: <span class="bold"><strong>main()</strong></span> and <span class="bold"><strong>yyerror()</strong></span>. The main routine keeps calling the parser until it reaches the end-of-file on <span class="bold"><strong>yyin</strong></span>,<a id="IDX-lex_and_yacc-0038" class="indexterm"></a> the lex input file.<a id="IDX-lex_and_yacc-0039" class="indexterm"></a> The only other necessary routine is <span class="bold"><strong>yylex()</strong></span> which is provided by our lexer.</p><p>In our final example of this chapter, <a class="link" href="ch01.html#extended_english_parser_ch106y" title="Example 1-8. Extended English parser ch1-06.y">Example 1-8</a>, we expand our earlier grammar to recognize a richer, although by no means complete, set of sentences. We invite you to experiment further with this example—you will see how difficult English is to describe in an unambiguous way.</p><div class="example"><a id="extended_english_parser_ch106y"></a><p class="title">Example 1-8. Extended English parser ch1-06.y</p><div class="example-contents"><pre class="programlisting">%{
+#include &lt;stdio.h&gt;
+%}
+
+%token NOUN PRONOUN VERB ADVERB ADJECTIVE PREPOSITION CONJUNCTION
+
+%%
+
+sentence: simple_sentence  { printf("Parsed a simple sentence.\n"); }
+      | compound_sentence { printf("Parsed a compound sentence.\n"); }
+      ;
+
+simple_sentence: subject verb object
+      |     subject verb object prep_phrase
+      ;
+
+compound_sentence: simple_sentence CONJUNCTION simple_sentence
+      |     compound_sentence CONJUNCTION simple_sentence
+      ;
+
+subject:    NOUN
+      |     PRONOUN
+      |     ADJECTIVE subject
+      ;
+
+verb:       VERB
+      |     ADVERB VERB
+      |     verb VERB
+      ;
+
+object:           NOUN
+      |     ADJECTIVE object
+      ;
+
+prep_phrase:     PREPOSITION NOUN
+      ;
+
+%%
+
+extern FILE *yyin;
+
+main()
+{
+      do
+        {
+            yyparse();
+      }
+        while(!feof(yyin));
+}
+
+yyerror(s)
+char *s;
+{
+    fprintf(stderr, "%s\n", s);
+}</pre></div></div><p>We have expanded our <span class="bold"><strong>sentence</strong></span> rule by introducing a traditional grammar formulation from elementary school English class: a sentence can be either a simple sentence or a compound sentence which contains two or more independent clauses joined with a coordinating conjunction. Our current lexical analyzer does not distinguish between a coordinating conjunction e.g., “and,” “but,” “or,” and a subordinating conjunction (e.g., “if”).</p><p>We have also introduced <span class="emphasis"><em>recursion</em></span> into this grammar. Recursion, in which a rule refers directly or indirectly to itself, is a powerful tool for describing grammars, and we use the technique in nearly every yacc<a id="IDX-lex_and_yacc-0040" class="indexterm"></a> grammar we write. In this instance the <span class="bold"><strong>compound_sentence</strong></span> and <span class="bold"><strong>verb</strong></span> rules introduce the recursion. The former rule simply states that a <span class="bold"><strong>compound_sentence</strong></span> is two or more simple sentences joined by a conjunction. The first possible match,</p><a id="I_programlisting1_tt19"></a><pre class="programlisting">    simple_sentence CONJUNCTION simple_sentence</pre><p>defines the “two clause” case while</p><a id="I_programlisting1_tt20"></a><pre class="programlisting">    compound_sentence CONJUNCTION simple_sentence</pre><p>defines the “more than two clause case.” We will discuss recursion in greater detail in later chapters.</p><p>Although our English grammar is not particularly useful, the techniques for identifying words with lex<a id="IDX-lex_and_yacc-0041" class="indexterm"></a> and then for finding the relationship among the words with yacc are much the same as we’ll use in the practical applications in later chapters. For example, in this C language statement,</p><a id="I_programlisting1_tt21"></a><pre class="programlisting">    if( a == b ) break; else func(&amp;a);</pre><p>a compiler would use lex to identify the tokens <span class="bold"><strong>if</strong></span>, <span class="bold"><strong>(</strong></span>, <span class="bold"><strong>a</strong></span>, <span class="bold"><strong>==</strong></span>, and so forth, and then use yacc to establish that “a == b” is the expression part of an <span class="bold"><strong>if</strong></span> statement, the <span class="bold"><strong>break</strong></span> statement was the “true” branch, and the function call its “false” branch.</p></div></div><div class="sect1" title="Running Lex and Yacc"><div class="titlepage"><div><div><h1 class="title"><a id="running_lex_and_yacc"></a>Running Lex and Yacc</h1></div></div></div><p>We conclude by describing how we built these tools on our system.</p><p>We called our various lexers <span class="emphasis"><em>ch1-N.l</em></span>, where <span class="emphasis"><em>N</em></span> corresponded to a particular lex specification example. Similarly, we called our parsers <span class="emphasis"><em>ch1-M.y</em></span>, where again <span class="emphasis"><em>M</em></span> is the number of an example. Then, to build the output, we did the following in UNIX:</p><a id="I_programlisting1_tt22"></a><pre class="programlisting">    % <span class="bold"><strong>lex ch1</strong></span>-<span class="emphasis"><em>n</em></span>
+            <span class="bold"><strong>.l</strong></span>
+    % <span class="bold"><strong>yacc -d ch1</strong></span>-<span class="emphasis"><em>m</em></span>
+            <span class="bold"><strong>.y</strong></span>
+    % <span class="bold"><strong>cc -c lex.yy.c y.tab.c</strong></span>
+    % <span class="bold"><strong>cc -o example</strong></span>-<span class="emphasis"><em>m</em></span>.<span class="emphasis"><em>n</em></span> 
+            <span class="bold"><strong>lex.yy.o y.tab.o -ll</strong></span></pre><p>The first line runs lex over the lex specification and generates a file, <span class="emphasis"><em>lex.yy.c</em></span>, which contains C code for the lexer. In the second line, we use yacc to generate both <span class="emphasis"><em>y.tab.c</em></span> and <span class="emphasis"><em>y.tab.h</em></span> (the latter is the file of token definitions created by the <span class="emphasis"><em>-d</em></span> switch.) The next line compiles each of the two C files. The final line links them together and uses the routines in the lex library <span class="emphasis"><em>libl.a</em></span>, normally in <span class="emphasis"><em>/usr/lib/libl.a</em></span> on most UNIX systems. If you are not using AT&amp;T lex and yacc, but one of the other implementations, you may be able to simply substitute the command names and little else will change. (In particular, Berkeley yacc and flex will work merely by changing the <span class="emphasis"><em>lex</em></span> and <span class="emphasis"><em>yacc</em></span> commands to <span class="emphasis"><em>byacc</em></span> and <span class="emphasis"><em>flex</em></span>, and removing the -<span class="emphasis"><em>ll</em></span> linker flag.) However, we know of far too many differences to assure the reader that this is true. For example, if we use the GNU replacement bison instead of yacc, it would generate two files called <span class="emphasis"><em>ch1-M.tab.c</em></span> and <span class="emphasis"><em>ch1-M.tab.h</em></span>. On systems with more restrictive naming, such as MS-DOS, these names will change (typically <span class="emphasis"><em>ytab.c</em></span> and <span class="emphasis"><em>ytab.h</em></span>.) See <a class="link" href="apa.html" title="Appendix A. AT&amp;T Lex">Appendices A</a> through <a class="link" href="aph.html" title="Appendix H. POSIX lex and yacc">H</a> for details on the various lex and yacc implementations.</p></div><div class="sect1" title="Lex vs. Hand-written Lexers"><div class="titlepage"><div><div><h1 class="title"><a id="lex_vs_hand_written_lexers"></a>Lex vs. Hand-written Lexers</h1></div></div></div><p>People have often told us that writing a lexer in C is so easy that there is no point in going to the effort to learn lex. Maybe and maybe not. <a class="link" href="ch01.html#a_lexer_written_in_c" title="Example 1-9. A lexer written in C">Example 1-9</a> shows a lexer written in C suitable for a simple command language that handles commands, numbers, strings, and new lines, ignoring white space and comments. <a class="link" href="ch01.html#the_same_lexer_written_in_lex" title="Example 1-10. The same lexer written in lex">Example 1-10</a> is an equivalent lexer written in lex. The lex version is a third the length of the C lexer. Given the rule of thumb that the number of bugs in a program is roughly proportional to its length, we’d expect the C version of the lexer to take three times as long to write and debug.</p><div class="example"><a id="a_lexer_written_in_c"></a><p class="title">Example 1-9. A lexer written in C</p><div class="example-contents"><pre class="programlisting">    #include &lt;stdio.h&gt;
+    #include &lt;ctype.h&gt;
+    char *progname;
+
+    #define NUMBER 400
+    #define COMMENT 401
+    #define TEXT 402
+    #define COMMAND 403
+
+    main(argc,argv)
+    int argc;
+
+    char *argv[];
+    {
+    int val;
+    while(val = lexer()) printf("value is %d\n",val);
+    }
+
+    lexer()
+    {
+        int c;
+
+        while ((c=getchar()) == ' ' || c == '\t')
+            ;
+        if (c == EOF)
+            return 0;
+        if (c == '.' || isdigit(c)) {   /* number */
+            while ((c = getchar()) != EOF &amp;&amp; isdigit (c)) ;
+        if (c == '.') while ((c = getchar()) != EOF &amp;&amp; isdigit (c);
+            ungetc(c, stdin);
+            return NUMBER;
+        }
+        if ( c =='#'){/* comment */
+            while ((c = getchar()) != EOF &amp;&amp; c != '\n');
+            ungetc(c,stdin);
+            return COMMENT;
+        }
+        if ( c =='"'){/* literal text */
+            while ((c = getchar()) != EOF &amp;&amp;
+           c != '"' &amp;&amp; c != '\n') ;
+            if(c == '\n') ungetc(c,stdin);
+            return TEXT;
+        }
+        if ( isalpha(c)) { /* check to see if it is a command */
+            while ((c = getchar()) != EOF &amp;&amp; isalnum(c));
+            ungetc(c, stdin);
+            return COMMAND;
+        }
+        return c;
+    }</pre></div></div><div class="example"><a id="the_same_lexer_written_in_lex"></a><p class="title">Example 1-10. The same lexer written in lex</p><div class="example-contents"><pre class="programlisting">    %{
+    #define NUMBER 400
+    #define COMMENT 401
+    #define TEXT 402
+    #define COMMAND 403
+    %}
+    %%
+    [ \t]+                 ;
+    [0-9]+               |
+    [0-9]+\.[0-9]+       |
+    \.[0-9]+               { return NUMBER; }
+    #.*                     { return COMMENT; }
+    \"[^\"\n]*\"            { return TEXT;   }
+    [a-zA-Z][a-zA-Z0-9]+    { return COMMAND;}
+    \n                      { return '\n'; }
+    %%
+    #include &lt;stdio.h&gt;
+
+    main(argc,argv)
+    int argc;
+    char *argv[];
+    {
+    int val;
+
+    while(val = yylex()) printf ("value is %d\n",val);
+    }</pre></div></div><p>Lex handles some subtle situations in a natural way that are difficult to get right in a hand written lexer. For example, assume that you’re skipping a C<a id="IDX-lex_and_yacc-0042" class="indexterm"></a> language comment. To find the end of the comment, you look for a “*”, then check to see that the next character is a “/”. If it is, you’re done, if not you keep scanning. A very common bug in C lexers is not to consider the case that the next character is itself a star, and the slash might follow that. In practice, this means that some comments fail:</p><a id="I_programlisting1_tt23"></a><pre class="programlisting">    /** comment **/</pre><p>(We’ve seen this exact bug in a sample, hand-written lexer distributed with one version of yacc!)</p><p>Once you get comfortable with lex, we predict that you’ll find, as we did, that it’s so much easier to write in lex that you’ll never write another handwritten lexer.</p><p>In the next chapter we delve into the workings of lex more deeply. In the chapter following we’ll do the same for yacc. After that we’ll consider several larger examples which describe many of the more complex issues and features of lex and yacc.</p></div><div class="sect1" title="Exercises"><div class="titlepage"><div><div><h1 class="title"><a id="exercises"></a>Exercises</h1></div></div></div><div class="orderedlist"><ol class="orderedlist"><li class="listitem"><p>Extend the English-language parser to handle more complex syntax: prepositional phrases in the subject, adverbs modifying adjectives, etc.</p></li><li class="listitem"><p>Make the parser handle compound verbs better, e.g., “has seen.” You might want to add new word and token types AUXVERB for auxiliary verbs.</p></li><li class="listitem"><p>Some words can be more than one part of speech, e.g., “watch,” “fly,” “time,” or “bear.” How could you handle them? Try adding a new word and token type NOUN_OR_VERB, and add it as an alternative to the rules for <span class="bold"><strong>subject</strong></span>, <span class="bold"><strong>verb</strong></span>, and <span class="bold"><strong>object</strong></span>. How well does this work?</p></li><li class="listitem"><p>When people hear an unfamiliar word, they can usually guess from the context what part of speech it is. Could the lexer characterize new words on the fly? For example, a word that ends in “ing” is probably a verb, and one that follows “a” or “the” is probably a noun or an adjective.</p></li><li class="listitem"><p>Are lex and yacc good tools to use for building a realistic English-language parser? Why not?</p></li></ol></div></div><div class="footnotes"><br><hr><div class="footnote"><p><sup>[<a id="ftn.CHP-1-FN-1" href="#CHP-1-FN-1" class="para">1</a>] </sup>You can also use a vertical bar within a pattern, e.g., <span class="bold"><strong>foo|bar</strong></span> is a pattern that matches either the string “foo” or the string “bar.” We leave some space between the pattern and the vertical bar to indicate that “bar” is the action, not part of the pattern.</p></div><div class="footnote"><p><sup>[<a id="ftn.CHP-1-FN-2" href="#CHP-1-FN-2" class="para">2</a>] </sup>Actually, we could have left out the main program because the lex library contains a default main routine just like this one.</p></div><div class="footnote"><p><sup>[<a id="ftn.CHP-1-FN-3" href="#CHP-1-FN-3" class="para">3</a>] </sup>We say symbol rather than token here, because we reserve the name “token” for symbols returned from the lexer, and the symbol to the left of the arrow did not come from the lexer. All tokens are symbols, but not all symbols are tokens.</p></div></div></div></div>
+    </div>
+    
+    <section class="t-bottom-cta bottom-cta bottom-cta-book free-chapter">
+  <p>Get <em>lex &amp; yacc, 2nd Edition</em> now with O’Reilly <span class="nowrap">online learning.</span></p>
+  <p>O’Reilly members experience live online training, plus books, videos, and digital content from <span class="nowrap">200+ publishers.</span></p>
+
+
+</section>
+
+</div>
+</section>
+</div>
+</main>
+
+
+
+
+
+
+
+
+</body>
+</html>
