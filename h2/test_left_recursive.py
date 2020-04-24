@@ -2,12 +2,33 @@
 #
 # test_parser.py
 #
+# Small subset of grammar to test left recursive statement parse, line/char and error reporting, ...
+#
 
 import ast
 import sys
 from sly import Lexer
 from sly import Parser
-from simple_node import SimpleNode as node
+from simple_node import SimpleNode as Node
+
+# print a breadcrumb for each(most) productions
+Debug = False
+
+# don't run the parser, just tokenize
+Tokenize_only = False
+
+# use with Tokenize_only
+Show_endlines = True
+
+# use with Tokenize_only
+Show_comments = True
+
+
+####################################
+#
+# Lexer
+#
+####################################
 
 class Lexer(Lexer):
 
@@ -25,7 +46,8 @@ class Lexer(Lexer):
         'Do',
         'Done',
         'True',
-        'False'
+        'False',
+        'Print',
     }
 
     # Set of token types.   This is always required
@@ -45,6 +67,9 @@ class Lexer(Lexer):
         'BLOCK_BEGIN',
         'BLOCK_END',
         'COMMENT',
+        'DELIM',
+        'TERM',
+        'PRINT',
         'ENDLINE',
     }
 
@@ -67,8 +92,11 @@ class Lexer(Lexer):
     BLOCK_END   = r'Done'
 
     COMMENT     = r'\#.*'
-    ENDLINE     = r'\n'
+    DELIM       = r','
+    TERM        = r'\.'
 
+    PRINT       = r'Print'
+    ENDLINE     = r'\n'
 
     @_(r'\d+')
     def NUMBER(self, token):
@@ -102,11 +130,34 @@ class Lexer(Lexer):
     def ENDLINE(self, token):
         self.lineno += 1
         token.value = 'ENDLINE'
-        return token
+#        return token
+
+    # Compute column.
+    #
+    #     text is the input text string
+    #     token is a token instance
+    def find_column(self, text, token):
+        last_cr = self.text.rfind('\n', 0, token.index)
+        if last_cr < 0:
+            last_cr = 0
+        column = (token.index - last_cr)
+        return column
 
     def error(self, token):
         print("Line {}: Bad character '{}' at char {}".format(self.lineno, token.value[0], self.find_column(token.value[0], token)))
         self.index += 1
+
+####################################
+#
+# Parser
+#
+####################################
+
+
+    #
+    # It is important that the last line/statement NOT have and an endline. Endline is a delimiter, not a terminator.
+    #
+
 
 class Parser(Parser):
     debugfile = 'parser.out'
@@ -132,147 +183,174 @@ class Parser(Parser):
         else:
             print("Syntax error at EOF")
 
+    # default start is the first production - 'code'
+    #start = "expr"
+    #start = "statements"
+
+    #
     # code
+    #
     @_('statements')
     def code(self, p):
         if p.statements is None:
-            pass
+            return []
         else:
-            return node('code', [p.statements])
+            return p.statements
 
-    # code
-#    @_('BLOCK_BEGIN statements BLOCK_END')
-#    def code(self, p):
-#
-#        if p.statements is None:
-#            pass
-#        else:
-#            return node('code', [p.statements])
-
-#    # statements
-#    @_('statements statement')
-#    def statements(self, p):
-#
-#        #print("statements: {}".format(p.statements))
-#        #print("statement: {}".format(p.statement))
-#
-#        if p.statements is None and p.statement is None:
-#            return None
-#        elif p.statement is None:
-#            return node('statements', [p.statements])
-#        elif p.statements is None:
-#            return node('statements', [node('statement', [p.statement])])
-#        else:
-#            return node('statements', [p.statements, node('statement', [p.statement])])
-
+    #
     # statements
-    @_('statement')
+    #
+
+    # empty statement
+    @_('empty')
     def statements(self, p):
-        if p.statement is None:
-            node('code')
-        else:
-            return node('code', [p.statement])
+        return None
 
-    # statements
+    # left recursive statements
     @_('statements statement')
     def statements(self, p):
         if p.statements is None and p.statement is None:
+            if Debug: print("statement(None) statement(None)")
             return None
         elif p.statement is None:
-            return node('statements', [p.statements])
+            if Debug : print("statements statement(None)")
+            return [p.statements]
         elif p.statements is None:
-            return node('statements', [node('statement', [p.statement])])
+            if Debug: print("statements(None) statement")
+            return [p.statement]
         else:
-            return node('statements', [p.statements, node('statement', [p.statement])])
+            if Debug: print("statements statement")
+            return p.statements + [p.statement]
 
-#    @_('statement',
-#       'error')
-#    def statements(self, p):
-#        #return node('statement', [p.statement])
-#        if hasattr(p, 'statement'):
-#            #print("{}".format(p.statement.lineno))
-#            print("{}".format(p.statement))
-#            #self.line_start = p.statement.index
-#
-#            if p.statement is None:
-#                return None
-#            else:
-#                return node('statement', [p.statement])
-#        else:
-#            self.line_start = p.error.index
-#            return node(('error', "There was statement error at line {}, char {}. Token {}({})".format(p.error.lineno, p.error.index - self.line_start, p.error.type, p.error.value)))
-
+    #
     # statement
+    #
+
+    # ENDLINE only statement - causes recursive statement list
+    @_('ENDLINE')
+    def statement(self, p):
+        self.line_start = p.index
+        self.char_adj += 1
+        # return None
+
+    # assignment statement
     @_('ID ASSIGN expr',
        'ID ASSIGN error')
     def statement(self, p):
+        if Debug: print("assignment")
         self.line_start = p.index
         if hasattr(p, 'expr'):
-            return node(('assign', p.ID), [p[2]])
-        elif hasattr(p, 'bexpr'):
-            return node(('assign', p.ID), [p[2]])
+            return Node(('='), [Node(('ID', p.ID)), p[2]])
         else:
-            return node(('error', "There was an assignment error at line {}, char {}. Token {}({})".format(p.error.lineno, p.error.index - self.line_start, p.error.type, p.error.value)))
+            return Node(('error', "There was an assignment error at line {}, char {}. Token {}({})".format(p.error.lineno, p.error.index - self.line_start, p.error.type, p.error.value)))
 
-    # codeblock
-    @_('BLOCK_BEGIN statements BLOCK_END')
-    def codeblock(self, p):
-        return node('codeblock', [p.statements])
+    # print statement
+    @_('PRINT LPAREN expr RPAREN',
+       'PRINT LPAREN error RPAREN')
+    def statement(self, p):
+        if Debug: print("print")
+        self.line_start = p.index
+        if hasattr(p, 'expr'):
+            return Node(('print'), [p[2]])
+        else:
+            return Node(('error', "There was a print error at line {}, char {}. Token {}({})".format(p.error.lineno, p.error.index - self.line_start, p.error.type, p.error.value)))
+
+    #
+    # expr
+    #
+
+    @_('LPAREN expr RPAREN')
+    def expr(self, p):
+        if hasattr(p, 'expr'):
+            return p.expr
 
     @_('MINUS expr %prec UMINUS')
     def expr(self, p):
-        return node('uminus', [p.expr])
+        return Node('uminus', [p.expr])
 
     # expr
     @_('NUMBER')
     def expr(self, p):
-        return node(('number', p.NUMBER))
+        if Debug: print("NUMBER" , p.NUMBER)
+        return Node(('number', p.NUMBER))
 
     @_('BOOL')
     def expr(self, p):
-        return node(('bool', p.BOOL))
+        if Debug: print("BOOL" , p.BOOL)
+        return Node(('bool', p.BOOL))
 
     @_('ID')
     def expr(self, p):
-        return node(('id', p.ID))
+        if Debug: print("ID" , p.ID)
+        return Node(('id', p.ID))
 
     @_('STRING')
     def expr(self, p):
-        return node(('string', p.STRING))
+        if Debug: print("STRING" , p.STRING)
+        return Node(('string', p.STRING))
 
     @_('expr PLUS expr',
        'expr MINUS expr',
        'expr TIMES expr',
        'expr DIVIDE expr')  # 'expr error expr' cause 5 s/r conflicts
     def expr(self, p):
-        return node(p[1], [p.expr0, p.expr1])
+        if Debug: print("expr", p[1] , "expr")
+        return Node(p[1], [p.expr0, p.expr1])
 
-    @_('ENDLINE')
-    def statement(self, p):
-        self.char_adj += 1
-        return None
+    #
+    # empty
+    #
+    @_('')
+    def empty(self, p):
+        if Debug: print("empty")
+        pass
 
+#
+# Parse input text and print syntax tree
+#
+def parse_input(results):
+    lexer = Lexer()
+    parser = Parser()
+
+    if Tokenize_only:
+        for tok in lexer.tokenize(results):
+            if not Show_endlines and tok.type == 'ENDLINE':
+                continue
+            if not Show_comments and tok.type == 'COMMENT':
+                continue
+            print('type=%r, value=%r' % (tok.type, tok.value))
+    else:
+        results = parser.parse(lexer.tokenize(results))
+        if (results is None) or (isinstance(results, list) and len(results) == 0):
+            print('No statements')
+        elif isinstance(results, list) and isinstance(results[0], Node):
+            for s in results:
+                print(str(s))
+        else:
+            print(results)
+
+#
+# main - read input from files, stdin or interactive console
+#
 def main():
     import fileinput
 
-    parser = Parser()
-
-    lexer = Lexer()
+    # results generally returns a list of statements (SimpleNodes). If the parser
+    # is set to start at a production other than statements, it will return a SimpleNode
 
     if len(sys.argv) > 1:
         with fileinput.input() as f:
             lines = []
             for line in f:
                 lines.append(line)
-
-            result = parser.parse(lexer.tokenize(''.join(lines)))
-            print("{}".format(result))
+            #parse_input(''.join(lines).strip())
+            parse_input(''.join(lines))
     else:
+        print("Interactive mode. Ctrl-D to exit.")
         while True:
             try:
                 text = input()
-                result = parser.parse(lexer.tokenize(text))
-                print("{}".format(result))
+                parse_input(text)
             except EOFError:
                 break
 
